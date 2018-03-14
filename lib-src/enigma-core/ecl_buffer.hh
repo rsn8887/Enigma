@@ -23,6 +23,11 @@
 #include <cstddef>
 #include <string>
 
+#ifdef __vita__
+#define Uint32 uint32_t
+#define Uint64 uint64_t
+#endif
+
 namespace ecl {
 class Buffer {
 public:

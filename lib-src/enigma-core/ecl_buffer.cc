@@ -195,7 +195,7 @@ Buffer& ecl::write(Buffer& buf, Uint32 dword) {
 Buffer& ecl::read(Buffer& buf, Uint64& lvar) {
     Uint8* ptr = (Uint8*)buf.get_rspace(8);
     if (ptr != 0) {
-        lvar = ptr[0];
+        lvar = Uint64(ptr[0]);
         lvar |= (Uint64(ptr[1]) << 8);
         lvar |= (Uint64(ptr[2]) << 16);
         lvar |= (Uint64(ptr[3]) << 24);

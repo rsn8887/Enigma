@@ -231,7 +231,6 @@ void display::InitModels() {
         m.manage();
     }
     enigma::Log << "# models: " << modelmgr->num_templates() << endl;
-
     surface_cache_alpha.clear();
     lua_close(L);
 }
@@ -271,7 +270,6 @@ int display::DefineImage(const char *name, const char *fname, int xoff, int yoff
     ecl::Surface *sfc = surface_cache.get(fname);
     if (!sfc)
         return 1;
-
     ecl::Rect r = sfc->size();
     r.x += padding;
     r.y += padding;

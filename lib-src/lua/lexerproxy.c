@@ -9,6 +9,12 @@
 
 #include <string.h>
 
+#ifdef __vita__
+#define bool _Bool;
+#define false 1;
+#define true 0;
+#endif
+
 bool lua_evaluate_assert = false;
 
 static int nexttoken(LexState *ls, SemInfo *seminfo)

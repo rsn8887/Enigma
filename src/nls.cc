@@ -9,6 +9,11 @@
 
 #include <config.h>
 
+#ifdef __vita__
+#undef HAVE_SETENV
+#undef HAVE_PUTENV
+#endif
+
 using namespace std;
 
 #if !defined (HAVE_SETENV) && defined (HAVE_PUTENV)

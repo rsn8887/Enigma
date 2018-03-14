@@ -73,6 +73,14 @@
 #include <CoreServices/CoreServices.h>
 #endif
 
+#ifdef __vita__
+#include <psp2/kernel/processmgr.h>
+#include <psp2/power.h>
+#include "psp2_touch.h"
+SDL_Joystick *vitaJoy0 = NULL;
+int _newlib_heap_size_user = 192 * 1024 * 1024;
+#endif
+
 using namespace std;
 using namespace ecl;
 using namespace enigma;
@@ -247,8 +255,20 @@ Application::Application() : wizard_mode (false), nograb (false), language (""),
 void Application::init(int argc, char **argv)
 {
     sscanf(PACKAGE_VERSION, "%4lf", &enigmaVersion);
-
+#ifdef __vita__
+    progCallPath = "ux0:/data/enigma";
+#else
     progCallPath = argv[0];
+#endif
+
+#ifdef __vita__
+    scePowerSetArmClockFrequency(444);
+    scePowerSetBusClockFrequency(222);
+    scePowerSetGpuClockFrequency(222);
+    scePowerSetGpuXbarClockFrequency(166);
+    psp2InitTouch();
+#endif
+
 #if MACOSX
     CFBundleRef mainBundle = CFBundleGetMainBundle();
     CFURLRef cfurlmain = CFBundleCopyExecutableURL(mainBundle);
@@ -294,6 +314,9 @@ void Application::init(int argc, char **argv)
 
     // initialize system datapaths -- needs ap
     systemCmdDataPath = ap.datapath;
+#ifdef __vita__
+    ap.preffilename = "ux0:/data/enigma";
+#endif
     initSysDatapaths(ap.preffilename);
 
     // redirect stdout, stderr
@@ -383,10 +406,20 @@ void Application::init(int argc, char **argv)
     int sdl_flags = SDL_INIT_VIDEO;
     if (enigma::WizardMode)
         sdl_flags |= SDL_INIT_NOPARACHUTE;
+#ifdef __vita__
+    sdl_flags |= SDL_INIT_JOYSTICK;
+#endif
+
     if (SDL_Init(sdl_flags) < 0) {
         fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
         exit(1);
     }
+
+#ifdef __vita__
+    SDL_JoystickEventState(SDL_ENABLE);
+    vitaJoy0 = SDL_JoystickOpen(0);
+#endif
+
     std::atexit(SDL_Quit);
     SDL_EnableUNICODE(1);
     const SDL_version* vi = SDL_Linked_Version();
@@ -408,7 +441,6 @@ void Application::init(int argc, char **argv)
         exit(1);
     }
 #endif
-
     // ----- Initialize video subsystem
     video::Init();
     video::SetCaption ("Enigma v" PACKAGE_VERSION);
@@ -416,7 +448,6 @@ void Application::init(int argc, char **argv)
     video::ShowMouse();
     SDL_ShowCursor(0);
     errorInit = true;
-
 
     // ----- Initialize sound subsystem
     sound::Init(!ap.nomusic, !ap.nosound);
@@ -541,7 +572,6 @@ void Application::initSysDatapaths(const std::string &prefFilename)
     bool progDirExists = split_path(progCallPath, &progDir, &progName);
     std::string systemPath = SYSTEM_DATA_DIR; // substituted by configure.ac
     bool haveHome = (getenv("HOME") != 0);
-
 
 #ifdef __MINGW32__
     // windows standard user specific application data directory path

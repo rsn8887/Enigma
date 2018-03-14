@@ -41,6 +41,12 @@
 #include <sstream>
 #include "config.h"
 
+#ifdef __vita__
+#include <vita2d.h>
+#include "psp2_input.h"
+#define SDL_PollEvent PSP2_PollEvent
+#endif
+
 #define SCREEN ecl::Screen::get_instance()
 
 using namespace std;
@@ -119,7 +125,28 @@ bool Video_SDL::init(int w, int h, int bpp, bool fullscreen) {
     bpp = SDL_VideoModeOK(w, h, bpp, flags);
     if (bpp == 0)
         return false;
+
+#ifdef __vita__
+    vita2d_texture_set_alloc_memblock_type(SCE_KERNEL_MEMBLOCK_TYPE_USER_RW);
+
+    sdlScreen = SDL_SetVideoMode(w, h, 16, SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_FULLSCREEN);
+    float sh = (float) 544;
+    float sw = (float)w*((float)544/(float)h);
+    int x = (960-sw)/2;
+    int y = (544-sh)/2;
+
+    SDL_SetVideoModeScaling(x, y, sw, sh);
+
+    //This requires a recent SDL-Vita branch SDL12 for example
+   //https://github.com/rsn8887/SDL-Vita/tree/SDL12
+   //to compile
+   SDL_SetVideoModeBilinear(1);
+
+   SDL_SetVideoModeSync(1);
+#else
     sdlScreen = SDL_SetVideoMode(w, h, bpp, flags);
+#endif
+
     if (sdlScreen == 0)
         return false;
 

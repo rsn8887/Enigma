@@ -30,6 +30,11 @@
 #include "SDL.h"
 #include <string>
 
+#ifdef __vita__
+#include "psp2_input.h"
+#define SDL_PollEvent PSP2_PollEvent
+#endif
+
 using namespace enigma;
 
 #include "client_internal.hh"

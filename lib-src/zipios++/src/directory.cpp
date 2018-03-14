@@ -24,7 +24,7 @@
 
 #include "directory.h"
 
-#if defined(unix) || defined(__unix) || defined(OS2) || defined(__unix__) || defined(__MACH__) || defined(__NetBSD__) || defined (__FreeBSD__) || defined (__OpenBSD__)
+#if defined(unix) || defined(__unix) || defined(OS2) || defined(__unix__) || defined(__MACH__) || defined(__NetBSD__) || defined (__FreeBSD__) || defined (__OpenBSD__) || defined (__vita__)
 #  define BOOST_UNIX 1
 #elif defined(_WINDOWS) || defined(__MINGW32__) || defined (_MSC_VER)
 #  define BOOST_WINNT 1
@@ -46,6 +46,10 @@
 #include <pwd.h>
 #include <grp.h>
 
+#ifdef __vita__
+#define chown(...)
+#define chmod(...)
+#endif
 struct boost::filesystem::dir_it::representation
 {
 	representation():
@@ -180,36 +184,52 @@ namespace boost
 		template <> void set<uid>(dir_it const &it, uid_t uid) { it.rep->change_owner(uid); }
 		template <> std::string get<uname>(dir_it const &it)
 			{
+#ifndef __vita__
 				struct passwd *pw = getpwuid(it.rep->get_stat().st_uid);
 				if (pw == 0)
 					throw unknown_uid(it.rep->get_stat().st_uid);
 				return pw->pw_name;
+#else
+				return std::string("");
+#endif
 			}
 		template <> void set<uname>(dir_it const &it, std::string name)
 			{
+#ifndef __vita__
 				struct passwd *pw = getpwnam(name.c_str());
 				if (pw != 0)
 					it.rep->change_owner(pw->pw_uid);
 				else
 					throw unknown_uname(name);
+#else
+				return;
+#endif
 			}
 
 		template <> gid_t get<gid>(dir_it const &it) { return it.rep->get_stat().st_gid; }
 		template <> void set<gid>(dir_it const &it, gid_t gid) { it.rep->change_group(gid); }
 		template <> std::string get<gname>(dir_it const &it)
 			{
+#ifndef __vita__
 				struct group *grp = getgrgid(it.rep->get_stat().st_gid);
 				if (grp == 0)
 					throw unknown_gid(it.rep->get_stat().st_gid);
 				return grp->gr_name;
+#else
+				return std::string("");
+#endif
 			}
 		template <> void set<gname>(dir_it const &it, std::string name)
 			{
+#ifndef __vita__
 				struct group *grp = getgrnam(name.c_str());
 				if (grp != 0)
 					it.rep->change_group(grp->gr_gid);
 				else
 					throw unknown_gname(name);
+#else
+				return;
+#endif
 			}
 
 

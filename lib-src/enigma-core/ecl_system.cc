@@ -46,8 +46,13 @@ using std::string;
 const char *ecl::PathSeparator = "\\";  // for path assembly
 const char *ecl::PathsSeparator = ";";  // for listing paths in a string
 #else
+#ifdef __vita__
+const char *ecl::PathSeparator = "/";   // for path assembly
+const char *ecl::PathsSeparator = ";";  // for listing paths in a string
+#else
 const char *ecl::PathSeparator = "/";   // for path assembly
 const char *ecl::PathsSeparator = ":";  // for listing paths in a string
+#endif
 #endif
 const char *ecl::PathSeparators = "/\\";  // for path splits
 

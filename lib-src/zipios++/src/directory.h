@@ -36,7 +36,7 @@
 // #include <boost.h>  Contents of boost.h
 
 // Allow control over DLL version being built
-#if defined(unix) || defined(__unix) || defined(__unix__) || defined(__MACH__) || defined(__NetBSD__) || defined (__FreeBSD__) || defined (__OpenBSD__)
+#if defined(unix) || defined(__unix) || defined(__unix__) || defined(__MACH__) || defined(__NetBSD__) || defined (__FreeBSD__) || defined (__OpenBSD__) || defined (__vita__)
 #  define BOOST_DECL
 #elif defined(ZIPIOS_DLL)
 #  ifdef ZIPIOS_EXPORTS
@@ -49,7 +49,7 @@
 #endif
 // end of contents of boost.h
 
-#if defined(unix) || defined(__unix) || defined(__unix__) || defined(OS2) || defined(__MACH__) || defined(__NetBSD__) || defined (__FreeBSD__) || defined (__OpenBSD__)
+#if defined(unix) || defined(__unix) || defined(__unix__) || defined(OS2) || defined(__MACH__) || defined(__NetBSD__) || defined (__FreeBSD__) || defined (__OpenBSD__) || defined (__vita__)
 #include <sys/types.h>
 #endif
 
@@ -233,7 +233,7 @@ namespace boost
 
 #endif
 
-#if defined(unix) || defined(__unix) || defined(__unix__) || defined(OS2) || defined(__MACH__) || defined(__NetBSD__) || defined (__FreeBSD__) || defined (__OpenBSD__)
+#if defined(unix) || defined(__unix) || defined(__unix__) || defined(OS2) || defined(__MACH__) || defined(__NetBSD__) || defined (__FreeBSD__) || defined (__OpenBSD__) || defined (__vita__)
 
 		struct is_link { typedef bool value_type; };
 		template <> bool get<is_link>(dir_it const &);

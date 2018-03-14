@@ -49,6 +49,13 @@
 #include <cctype>
 #include <cstring>
 
+#ifdef __vita__
+#include "psp2_touch.h"
+#include "psp2_input.h"
+#define SDL_PollEvent PSP2_PollEvent
+extern int insideMenu;
+#endif
+
 #include "client_internal.hh"
 
 namespace enigma {
@@ -194,6 +201,10 @@ void Client::network_stop() {
 
 void Client::handle_events() {
     SDL_Event e;
+#ifdef __vita__
+    psp2PollTouch();
+    insideMenu = 0;
+#endif
     while (SDL_PollEvent(&e)) {
         switch (e.type) {
         case SDL_KEYDOWN: on_keydown(e); break;

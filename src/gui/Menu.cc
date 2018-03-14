@@ -30,6 +30,13 @@
 #include <algorithm>
 #include <iostream>
 
+#ifdef __vita__
+#include "psp2_touch.h"
+#include "psp2_input.h"
+#define SDL_PollEvent PSP2_PollEvent
+extern int insideMenu;
+#endif
+
 using namespace ecl;
 using namespace std;
 
@@ -80,6 +87,10 @@ namespace enigma { namespace gui {
         draw_all();
         while (!(quitp || abortp)) {
             SCREEN->flush_updates();
+#ifdef __vita__
+            psp2PollTouch();
+            insideMenu = 1;
+#endif
             while (SDL_PollEvent(&e)) {
                 handle_event(e);
                 if (app.bossKeyPressed) return true;
@@ -88,6 +99,15 @@ namespace enigma { namespace gui {
             if(active_widget) active_widget->tick(0.01);
             if(key_focus_widget && (key_focus_widget != active_widget)) key_focus_widget->tick(0.01);
             tick(0.01);
+#ifdef __vita__
+            static double totalTime = 0;
+            totalTime += 10;
+            if (totalTime > 16) {
+                totalTime = 0;
+                PSP2_HandleJoysticks();
+                SDL_Flip(SCREEN->get_surface()->get_surface());
+            }
+#endif
             sound::MusicTick(0.01);
             refresh();
         }

@@ -37,6 +37,10 @@
 #include <cmath>
 #include <iostream>
 
+#ifdef __vita__
+#include "psp2_input.h"
+#endif
+
 using namespace std;
 using namespace ecl;
 using namespace display;
@@ -1804,7 +1808,14 @@ void GameDisplay::redraw_all(Screen *scr) {
 
 void GameDisplay::redraw(ecl::Screen *screen) {
     GC gc(screen->get_surface());
+#ifdef __vita__
+    bool flip_buffers = false;
+#endif
+
     if (SDL_GetTicks() - last_frame_time > 10) {
+#ifdef __vita__
+        flip_buffers = true;
+#endif
         CommonDisplay::redraw();
 
         if (ShowFPS) {
@@ -1830,6 +1841,12 @@ void GameDisplay::redraw(ecl::Screen *screen) {
         draw_borders(gc);
     screen->flush_updates();
     redraw_everything = false;
+#ifdef __vita__
+    if (flip_buffers) {
+        PSP2_HandleJoysticks();
+        SDL_Flip(ecl::Screen::get_instance()->get_surface()->get_surface());
+    }
+#endif
 }
 
 void GameDisplay::draw_all(GC &gc) {

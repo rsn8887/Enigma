@@ -51,7 +51,7 @@ namespace
 
 /* -------------------- DirIter (POSIX) -------------------- */
 
-#ifdef HAVE_DIRENT_H
+#if defined(HAVE_DIRENT_H)
 
     class DirIterOS : DirIter {
     public:

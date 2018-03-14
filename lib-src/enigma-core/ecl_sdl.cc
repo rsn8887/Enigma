@@ -1,5 +1,11 @@
 #include "ecl_sdl.hh"
 
+#ifdef __vita__
+#include "psp2_input.h"
+#define SDL_PollEvent PSP2_PollEvent
+extern int insideMenu;
+#endif
+
 namespace sdl {
 
 // Dispatch an event to the suitable virtual function. Returns
@@ -23,6 +29,7 @@ bool EventHandler::dispatch_event(SDL_Event &e) {
 
 void FlushEvents() {
     SDL_Event e;
+
     while (SDL_PollEvent(&e))
         ;
 }

@@ -18,7 +18,11 @@
 
 #include <stdio.h>
 #include "OxydVersion.h"
+#ifdef __vita__
+#include <string.h>
+#else
 #include <string>
+#endif
 #include <cassert>
 #include "VecUtils.h"
 #include "FileUtils.h"
