@@ -37,6 +37,11 @@ int PSP2_PollEvent(SDL_Event *event) {
 						case PAD_SELECT:
 							event->type = SDL_KEYDOWN;
 							event->key.keysym.sym = SDLK_F3;
+							event->key.keysym.mod = 0;	
+							break;
+						case PAD_R:
+							event->type = SDL_KEYDOWN;
+							event->key.keysym.sym = SDLK_F3;
 							event->key.keysym.mod = KMOD_LSHIFT;	
 							break;
 						case PAD_SQUARE:
@@ -69,6 +74,11 @@ int PSP2_PollEvent(SDL_Event *event) {
 							event->key.keysym.mod = 0;	
 							break;
 						case PAD_SELECT:
+							event->type = SDL_KEYUP;
+							event->key.keysym.sym = SDLK_F3;
+							event->key.keysym.mod = 0;	
+							break;
+						case PAD_R:
 							event->type = SDL_KEYUP;
 							event->key.keysym.sym = SDLK_F3;
 							event->key.keysym.mod = KMOD_LSHIFT;	
