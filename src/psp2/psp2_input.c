@@ -116,26 +116,33 @@ void PSP2_HandleJoysticks() {
 	int analogX = SDL_JoystickGetAxis(vitaJoy0, 0);
 	int analogY = SDL_JoystickGetAxis(vitaJoy0, 1);
 
-	rescaleAnalog( &analogX, &analogY, 1000);
+	rescaleAnalog( &analogX, &analogY, 3000);
 	hiresDX += analogX;
 	hiresDY += analogY;
 
-	if (insideMenu) {
-		SDL_WarpMouse(lastmx + hiresDX / 2048, lastmy + hiresDY / 2048);
-	}
-	else 
-	{
-		SDL_Event event;
-		event.type = SDL_MOUSEMOTION;
-		event.motion.x = lastmx + hiresDX / 2048;
-		event.motion.y = lastmy + hiresDY / 2048;
-		event.motion.xrel = hiresDX / 2048;
-		event.motion.yrel = hiresDY / 2048;
-		SDL_PushEvent(&event);
-	}
+	const int slowdown = 4096;
 
-	hiresDX = hiresDX - ((hiresDX / 2048) * 2048);
-	hiresDY = hiresDY - ((hiresDY / 2048) * 2048);
+	if (hiresDX != 0 || hiresDY != 0) {
+		int xrel = hiresDX / slowdown;
+		int yrel = hiresDY / slowdown;
+
+		if (insideMenu) {
+			SDL_WarpMouse(lastmx + xrel, lastmy + yrel);
+		}
+		else
+		{
+			SDL_Event event;
+			event.type = SDL_MOUSEMOTION;
+			event.motion.x = lastmx + xrel;
+			event.motion.y = lastmy + yrel;
+			event.motion.xrel = xrel;
+			event.motion.yrel = yrel;
+			SDL_PushEvent(&event);
+		}
+
+		hiresDX %= slowdown;
+		hiresDY %= slowdown;
+	}
 }
 
 
