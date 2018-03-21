@@ -287,7 +287,11 @@ void SoundEffectManager::initSoundSets()
     // Define sound sets
     sound_sets.clear();
     assert(sound_sets.empty());
+#ifdef __vita__
+    defineSoundSet ("Enigma",   "Enigma",  1);
+#else
     assert(defineSoundSet ("Enigma",   "Enigma",  1));
+#endif
     int pos = 2; // position in options menu button
     if (defineSoundSetOxyd ("Oxyd",     "Oxyd*",   OxydLib::OxydVersion_Oxyd1,          pos))  pos++;
     if (defineSoundSetOxyd ("Magnum",   "Magnum*", OxydLib::OxydVersion_OxydMagnum,     pos))  pos++;
