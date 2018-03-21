@@ -27,6 +27,7 @@ set(SRC_FILES
     src/psp2/psp2-dirent.c
     src/psp2/psp2_touch.c
     src/psp2/psp2_input.c
+    src/psp2/psp2_kbdvita.c
         src/AttributeDescriptor.cc
         src/DOMErrorReporter.cc
         src/DOMSchemaResolver.cc
@@ -369,7 +370,7 @@ set(LDFLAGS
         vita2d
         xerces-c
         curl
-        SceSysmodule_stub SceDisplay_stub SceGxm_stub
+        SceSysmodule_stub SceDisplay_stub SceGxm_stub SceAppUtil_stub
         SceCtrl_stub ScePgf_stub ScePower_stub SceCommonDialog_stub
         SceAudio_stub SceShellSvc_stub 
         SceHid_stub

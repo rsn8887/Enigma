@@ -100,12 +100,11 @@ namespace enigma { namespace gui {
             if(key_focus_widget && (key_focus_widget != active_widget)) key_focus_widget->tick(0.01);
             tick(0.01);
 #ifdef __vita__
-            static double totalTime = 0;
-            totalTime += 10;
-            if (totalTime > 16) {
-                totalTime = 0;
+            static Uint32 last_menu_draw_time = 0;
+            if (SDL_GetTicks() - last_menu_draw_time > 10) {
                 PSP2_HandleJoysticks();
                 SDL_Flip(SCREEN->get_surface()->get_surface());
+                last_menu_draw_time = SDL_GetTicks();
             }
 #endif
             sound::MusicTick(0.01);

@@ -30,11 +30,6 @@
 #include <memory>
 #include <cstdio>
 
-#ifdef __vita__
-#include <iostream>
-#include <fstream>
-#endif
-
 using namespace ecl;
 
 /* -------------------- Graphics primitives -------------------- */
@@ -406,22 +401,7 @@ Surface *ecl::DisplayFormat(Surface *s) {
 }
 
 ecl::Screen *ecl::OpenScreen(int w, int h, int bipp) {
-#ifdef __vita__
-    SDL_Surface *sfc = SDL_SetVideoMode(w, h, bipp, SDL_HWSURFACE|SDL_DOUBLEBUF);
-    float sh = (float) 544;
-    float sw = (float)w*((float)544/(float)h);
-    int x = (960-sw)/2;
-    int y = (544-sh)/2;
-
-    SDL_SetVideoModeScaling(x, y, sw, sh);
-
-    //This requires a recent SDL-Vita branch SDL12 for example
-   //https://github.com/rsn8887/SDL-Vita/tree/SDL12
-   //to compile
-   SDL_SetVideoModeBilinear(1);
-#else
     SDL_Surface *sfc = SDL_SetVideoMode(w, h, bipp, SDL_SWSURFACE);
-#endif
     return new Screen(sfc);
 }
 

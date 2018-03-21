@@ -23,7 +23,11 @@ namespace nls
         const char *localename;
         const char *flagimage;
     };
-    
+ #ifdef __vita__
+    const Language languages[] = {
+        { "default",    "",      "par" },
+    };
+#else
     const Language languages[] = {
         { "default",    "",      "par" },
         { "беларуская", "be_BY", "flags25x15/by" },
@@ -47,6 +51,7 @@ namespace nls
         { "Slovenčina", "sk_SK", "flags25x15/sk" },
         { "українська", "uk_UA", "flags25x15/ua" },
     };
+#endif
 }
 
 #endif

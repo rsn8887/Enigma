@@ -32,6 +32,10 @@
 #include <algorithm>
 #include <iostream>
 
+#ifdef __vita__
+#include "psp2_kbdvita.h"
+#endif
+
 using namespace enigma::gui;
 using namespace ecl;
 using namespace std;
@@ -128,9 +132,21 @@ bool TextField::on_event(const SDL_Event &e) {
     bool modified = false;
     
     switch (e.type) {
-        case SDL_MOUSEBUTTONDOWN:
+        case SDL_MOUSEBUTTONDOWN: {
             // set cursor
+#ifdef __vita__
+            handeled = true;
+            std::string newText = "";
+            char *imeResult = kbdvita_get("Enter Text", const_cast<char *>(getText().c_str()), 255);
+            if (imeResult != NULL) {
+                newText = imeResult;
+                set_text(newText);
+                invalidate();
+                modified = true;
+            }
+#endif
             break;
+        }
         case SDL_KEYDOWN:
             switch (e.key.keysym.sym) {
                 case SDLK_RETURN:

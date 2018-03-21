@@ -546,8 +546,6 @@ namespace enigma { namespace gui {
     void MainMenu::tick(double /* dtime */)
     {
 #ifdef __vita__
-//        display::RedrawAll(video::GetScreen());
-//        SDL_Flip(video::GetScreen()->get_surface()->get_surface());
         return;
 #else
         bool isFullScreen = app.prefs->getBool("FullScreen");

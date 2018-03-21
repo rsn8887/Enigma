@@ -138,11 +138,11 @@ bool Video_SDL::init(int w, int h, int bpp, bool fullscreen) {
     SDL_SetVideoModeScaling(x, y, sw, sh);
 
     //This requires a recent SDL-Vita branch SDL12 for example
-   //https://github.com/rsn8887/SDL-Vita/tree/SDL12
-   //to compile
-   SDL_SetVideoModeBilinear(1);
+    //https://github.com/rsn8887/SDL-Vita/tree/SDL12
+    //to compile
+    SDL_SetVideoModeBilinear(1);
 
-   SDL_SetVideoModeSync(1);
+    SDL_SetVideoModeSync(1);
 #else
     sdlScreen = SDL_SetVideoMode(w, h, bpp, flags);
 #endif
