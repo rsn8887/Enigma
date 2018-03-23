@@ -32,51 +32,51 @@ int PSP2_PollEvent(SDL_Event *event) {
 						case PAD_START:
 							event->type = SDL_KEYDOWN;
 							event->key.keysym.sym = SDLK_ESCAPE;
-							event->key.keysym.mod = 0;	
+							event->key.keysym.mod = 0;
 							break;
 						case PAD_SELECT:
 							event->type = SDL_KEYDOWN;
 							event->key.keysym.sym = SDLK_F3;
-							event->key.keysym.mod = 0;	
+							event->key.keysym.mod = 0;
 							break;
 						case PAD_R:
 							event->type = SDL_KEYDOWN;
 							event->key.keysym.sym = SDLK_F3;
-							event->key.keysym.mod = KMOD_LSHIFT;	
+							event->key.keysym.mod = KMOD_LSHIFT;
 							break;
 						case PAD_SQUARE:
 							event->type = SDL_MOUSEBUTTONDOWN;
 							event->button.button = SDL_BUTTON_LEFT;
 							event->button.state = SDL_PRESSED;
-							event->button.x = lastmx; 
-							event->button.y = lastmy; 
+							event->button.x = lastmx;
+							event->button.y = lastmy;
 							break;
 						case PAD_TRIANGLE:
 							event->type = SDL_MOUSEBUTTONDOWN;
 							event->button.button = SDL_BUTTON_RIGHT;
 							event->button.state = SDL_PRESSED;
-							event->button.x = lastmx; 
-							event->button.y = lastmy; 
+							event->button.x = lastmx;
+							event->button.y = lastmy;
 							break;
 						case PAD_LEFT:
 							event->type = SDL_KEYDOWN;
 							event->key.keysym.sym = SDLK_LEFT;
-							event->key.keysym.mod = 0;	
+							event->key.keysym.mod = 0;
 							break;
 						case PAD_RIGHT:
 							event->type = SDL_KEYDOWN;
 							event->key.keysym.sym = SDLK_RIGHT;
-							event->key.keysym.mod = 0;	
+							event->key.keysym.mod = 0;
 							break;
 						case PAD_UP:
 							event->type = SDL_KEYDOWN;
 							event->key.keysym.sym = SDLK_UP;
-							event->key.keysym.mod = 0;	
+							event->key.keysym.mod = 0;
 							break;
 						case PAD_DOWN:
 							event->type = SDL_KEYDOWN;
 							event->key.keysym.sym = SDLK_DOWN;
-							event->key.keysym.mod = 0;	
+							event->key.keysym.mod = 0;
 							break;
 						default:
 							break;
@@ -91,51 +91,51 @@ int PSP2_PollEvent(SDL_Event *event) {
 						case PAD_START:
 							event->type = SDL_KEYUP;
 							event->key.keysym.sym = SDLK_ESCAPE;
-							event->key.keysym.mod = 0;	
+							event->key.keysym.mod = 0;
 							break;
 						case PAD_SELECT:
 							event->type = SDL_KEYUP;
 							event->key.keysym.sym = SDLK_F3;
-							event->key.keysym.mod = 0;	
+							event->key.keysym.mod = 0;
 							break;
 						case PAD_R:
 							event->type = SDL_KEYUP;
 							event->key.keysym.sym = SDLK_F3;
-							event->key.keysym.mod = KMOD_LSHIFT;	
+							event->key.keysym.mod = KMOD_LSHIFT;
 							break;
 						case PAD_SQUARE:
 							event->type = SDL_MOUSEBUTTONUP;
 							event->button.button = SDL_BUTTON_LEFT;
 							event->button.state = SDL_RELEASED;
-							event->button.x = lastmx; 
-							event->button.y = lastmy; 
+							event->button.x = lastmx;
+							event->button.y = lastmy;
 							break;
 						case PAD_TRIANGLE:
 							event->type = SDL_MOUSEBUTTONUP;
 							event->button.button = SDL_BUTTON_RIGHT;
 							event->button.state = SDL_RELEASED;
-							event->button.x = lastmx; 
-							event->button.y = lastmy; 
+							event->button.x = lastmx;
+							event->button.y = lastmy;
 							break;
 						case PAD_LEFT:
 							event->type = SDL_KEYUP;
 							event->key.keysym.sym = SDLK_LEFT;
-							event->key.keysym.mod = 0;	
+							event->key.keysym.mod = 0;
 							break;
 						case PAD_RIGHT:
 							event->type = SDL_KEYUP;
 							event->key.keysym.sym = SDLK_RIGHT;
-							event->key.keysym.mod = 0;	
+							event->key.keysym.mod = 0;
 							break;
 						case PAD_UP:
 							event->type = SDL_KEYUP;
 							event->key.keysym.sym = SDLK_UP;
-							event->key.keysym.mod = 0;	
+							event->key.keysym.mod = 0;
 							break;
 						case PAD_DOWN:
 							event->type = SDL_KEYUP;
 							event->key.keysym.sym = SDLK_DOWN;
-							event->key.keysym.mod = 0;	
+							event->key.keysym.mod = 0;
 							break;
 						default:
 							break;
