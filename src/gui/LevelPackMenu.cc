@@ -42,6 +42,15 @@ namespace enigma { namespace gui {
     std::string LevelPackMenu::lastGroupName;
     int LevelPackMenu::firstDisplayedGroup = 0;
 
+#ifdef __vita__
+    static const char *helptext[] = {
+        N_("Left column:"),              N_("Levelpack groups"),
+        N_("Right columns:"),            N_("Levelpacks of selected group"),
+        N_("Left click (square):"),               N_("Select group or levelpack"),
+        N_("Right click (triangle):"),   N_("Configure group or levelpack"),
+        0
+    };
+#else
     static const char *helptext[] = {
         N_("Left column:"),              N_("Levelpack groups"),
         N_("Right columns:"),            N_("Levelpacks of selected group"),
@@ -49,6 +58,7 @@ namespace enigma { namespace gui {
         N_("Right or control click:"),   N_("Configure group or levelpack"),
         0
     };
+#endif
     
     LevelPackMenu::LevelPackMenu() : packsHList (NULL), scrollLeft (NULL), 
             scrollRight (NULL), scrollUp (NULL), scrollDown (NULL), 

@@ -188,7 +188,24 @@ namespace enigma { namespace gui {
         }
     
     }
-    
+
+#ifdef __vita__
+    static const char *helptext_levelmenu[] = {
+        N_("Escape (start/circle):"),              N_("Skip to main menu"),
+        "F1 (l-trigger):",                      N_("Show this help"),
+        "F5:",                      0, // see below
+        "F7:",                      N_("Update levelpack"),
+        N_("Arrows (dpad):"),              N_("Select level"),
+        N_("Return (cross):"),              N_("Play selected level"),
+        N_("Back/Space:"),          N_("Previous/next levelpack"),
+        "u",                        N_("Mark current level as unsolved"),
+    //    "s",                        N_("Mark current level as Solved"),
+        N_("Alt+Return:"),          N_("Switch between fullscreen and window"),
+        N_("Left click (square):"),               N_("Play selected level"),
+        N_("Right click (triangle):"),   N_("Inspect selected level"),
+        0
+    };
+#else
     static const char *helptext_levelmenu[] = {
         N_("Escape:"),              N_("Skip to main menu"),
         "F1:",                      N_("Show this help"),
@@ -204,6 +221,7 @@ namespace enigma { namespace gui {
         N_("Right or control click:"),   N_("Inspect selected level"),
         0
     };
+#endif
     
     bool LevelMenu::on_event (const SDL_Event &e) 
     {

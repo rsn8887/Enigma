@@ -31,6 +31,15 @@ using namespace std;
 
 namespace enigma { namespace gui {
 
+#ifdef __vita__
+    static const char *helptext[] = {
+        N_("Escape (start/circle):"),              N_("Back"),
+        "F1 (l-trigger):",                      N_("Show this help"),
+        N_("Page Up:"),             N_("Show previous screenshot"),
+        N_("Page Down:"),           N_("Show next screenshot"),
+        0
+    };
+#else
     static const char *helptext[] = {
         N_("Escape:"),              N_("Back"),
         "F1:",                      N_("Show this help"),
@@ -38,7 +47,7 @@ namespace enigma { namespace gui {
         N_("Page Down:"),           N_("Show next screenshot"),
         0
     };
-    
+#endif
     ScreenshotViewer::ScreenshotViewer(lev::Proxy *aLevel) :
             levelProxy (aLevel), shotNumber (0) {
     }
