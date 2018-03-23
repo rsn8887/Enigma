@@ -30,6 +30,7 @@ int PSP2_PollEvent(SDL_Event *event) {
 				{
 					switch (event->jbutton.button) {
 						case PAD_START:
+						case PAD_CIRCLE:
 							event->type = SDL_KEYDOWN;
 							event->key.keysym.sym = SDLK_ESCAPE;
 							event->key.keysym.mod = 0;
@@ -43,6 +44,16 @@ int PSP2_PollEvent(SDL_Event *event) {
 							event->type = SDL_KEYDOWN;
 							event->key.keysym.sym = SDLK_F3;
 							event->key.keysym.mod = KMOD_LSHIFT;
+							break;
+						case PAD_L:
+							event->type = SDL_KEYDOWN;
+							event->key.keysym.sym = SDLK_F1;
+							event->key.keysym.mod = 0;
+							break;
+						case PAD_CROSS:
+							event->type = SDL_KEYDOWN;
+							event->key.keysym.sym = SDLK_RETURN;
+							event->key.keysym.mod = 0;
 							break;
 						case PAD_SQUARE:
 							event->type = SDL_MOUSEBUTTONDOWN;
@@ -89,6 +100,7 @@ int PSP2_PollEvent(SDL_Event *event) {
 				{
 					switch (event->jbutton.button) {
 						case PAD_START:
+						case PAD_CIRCLE:
 							event->type = SDL_KEYUP;
 							event->key.keysym.sym = SDLK_ESCAPE;
 							event->key.keysym.mod = 0;
@@ -102,6 +114,16 @@ int PSP2_PollEvent(SDL_Event *event) {
 							event->type = SDL_KEYUP;
 							event->key.keysym.sym = SDLK_F3;
 							event->key.keysym.mod = KMOD_LSHIFT;
+							break;
+						case PAD_L:
+							event->type = SDL_KEYUP;
+							event->key.keysym.sym = SDLK_F1;
+							event->key.keysym.mod = 0;
+							break;
+						case PAD_CROSS:
+							event->type = SDL_KEYUP;
+							event->key.keysym.sym = SDLK_RETURN;
+							event->key.keysym.mod = 0;
 							break;
 						case PAD_SQUARE:
 							event->type = SDL_MOUSEBUTTONUP;
