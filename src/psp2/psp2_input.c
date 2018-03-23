@@ -58,6 +58,26 @@ int PSP2_PollEvent(SDL_Event *event) {
 							event->button.x = lastmx; 
 							event->button.y = lastmy; 
 							break;
+						case PAD_LEFT:
+							event->type = SDL_KEYDOWN;
+							event->key.keysym.sym = SDLK_LEFT;
+							event->key.keysym.mod = 0;	
+							break;
+						case PAD_RIGHT:
+							event->type = SDL_KEYDOWN;
+							event->key.keysym.sym = SDLK_RIGHT;
+							event->key.keysym.mod = 0;	
+							break;
+						case PAD_UP:
+							event->type = SDL_KEYDOWN;
+							event->key.keysym.sym = SDLK_UP;
+							event->key.keysym.mod = 0;	
+							break;
+						case PAD_DOWN:
+							event->type = SDL_KEYDOWN;
+							event->key.keysym.sym = SDLK_DOWN;
+							event->key.keysym.mod = 0;	
+							break;
 						default:
 							break;
 					}
@@ -96,6 +116,26 @@ int PSP2_PollEvent(SDL_Event *event) {
 							event->button.state = SDL_RELEASED;
 							event->button.x = lastmx; 
 							event->button.y = lastmy; 
+							break;
+						case PAD_LEFT:
+							event->type = SDL_KEYUP;
+							event->key.keysym.sym = SDLK_LEFT;
+							event->key.keysym.mod = 0;	
+							break;
+						case PAD_RIGHT:
+							event->type = SDL_KEYUP;
+							event->key.keysym.sym = SDLK_RIGHT;
+							event->key.keysym.mod = 0;	
+							break;
+						case PAD_UP:
+							event->type = SDL_KEYUP;
+							event->key.keysym.sym = SDLK_UP;
+							event->key.keysym.mod = 0;	
+							break;
+						case PAD_DOWN:
+							event->type = SDL_KEYUP;
+							event->key.keysym.sym = SDLK_DOWN;
+							event->key.keysym.mod = 0;	
 							break;
 						default:
 							break;
