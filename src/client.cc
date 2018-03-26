@@ -490,10 +490,10 @@ void Client::on_keydown(SDL_Event &e) {
 
 #ifdef __vita__
 static const char *helptext_ingame[] = {
-    N_("Left mouse (square):"), N_("Activate/drop leftmost inventory item"),
-    N_("Right mouse (triangle):"), N_("Rotate inventory items"), N_("Escape (start/circle):"), N_("Show game menu"),
-    N_("Shift+Escape:"), N_("Quit game immediately"), N_("F1 (l-trigger):"), N_("Show this help"), N_("F3 (select):"),
-    N_("Kill current marble"), N_("Shift+F3 (r-trigger):"), N_("Restart the current level"), N_("F4:"),
+    N_("Left mouse (square/L):"), N_("Activate/drop leftmost inventory item"),
+    N_("Right mouse (triangle/R):"), N_("Rotate inventory items"), N_("Escape (circle):"), N_("Show game menu"),
+    N_("Shift+Escape:"), N_("Quit game immediately"), N_("F1 (start):"), N_("Show this help"), N_("F3 (select):"),
+    N_("Kill current marble"), N_("Shift+F3 (R+select):"), N_("Restart the current level"), N_("F4:"),
     N_("Skip to next level"), N_("F5:"), 0,  // see below
     N_("F6:"), N_("Jump back to last level"), N_("F10:"), N_("Make screenshot"),
     N_("Left/right arrow (dpad):"), N_("Change mouse speed"), N_("Alt+x:"), N_("Return to level menu"),

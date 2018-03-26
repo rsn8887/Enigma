@@ -1,13 +1,13 @@
 #include "psp2_input.h"
 #include <math.h>
 
-int lastAnalogX = 0;
-int lastAnalogY = 0;
 int lastmx = 0;
 int lastmy = 0;
 int hiresDX = 0;
 int hiresDY = 0;
 int insideMenu = 1;
+int holding_R = 0;
+
 extern SDL_Joystick *vitaJoy0;
 
 int PSP2_PollEvent(SDL_Event *event) {
@@ -15,9 +15,6 @@ int PSP2_PollEvent(SDL_Event *event) {
 	int ret = SDL_PollEvent(event);
 
 	if(event != NULL) {
-
-		int analogX = lastAnalogX;
-		int analogY = lastAnalogY;
 
 		switch (event->type) {
 
@@ -29,25 +26,9 @@ int PSP2_PollEvent(SDL_Event *event) {
 				if (event->jbutton.which==0) // Only Joystick 0 controls the game
 				{
 					switch (event->jbutton.button) {
-						case PAD_START:
 						case PAD_CIRCLE:
 							event->type = SDL_KEYDOWN;
 							event->key.keysym.sym = SDLK_ESCAPE;
-							event->key.keysym.mod = 0;
-							break;
-						case PAD_SELECT:
-							event->type = SDL_KEYDOWN;
-							event->key.keysym.sym = SDLK_F3;
-							event->key.keysym.mod = 0;
-							break;
-						case PAD_R:
-							event->type = SDL_KEYDOWN;
-							event->key.keysym.sym = SDLK_F3;
-							event->key.keysym.mod = KMOD_LSHIFT;
-							break;
-						case PAD_L:
-							event->type = SDL_KEYDOWN;
-							event->key.keysym.sym = SDLK_F1;
 							event->key.keysym.mod = 0;
 							break;
 						case PAD_CROSS:
@@ -55,6 +36,7 @@ int PSP2_PollEvent(SDL_Event *event) {
 							event->key.keysym.sym = SDLK_RETURN;
 							event->key.keysym.mod = 0;
 							break;
+						case PAD_L: // intentional fall-through
 						case PAD_SQUARE:
 							event->type = SDL_MOUSEBUTTONDOWN;
 							event->button.button = SDL_BUTTON_LEFT;
@@ -62,12 +44,29 @@ int PSP2_PollEvent(SDL_Event *event) {
 							event->button.x = lastmx;
 							event->button.y = lastmy;
 							break;
+						case PAD_R:
+							holding_R = 1; // intentional fall-through
 						case PAD_TRIANGLE:
 							event->type = SDL_MOUSEBUTTONDOWN;
 							event->button.button = SDL_BUTTON_RIGHT;
 							event->button.state = SDL_PRESSED;
 							event->button.x = lastmx;
 							event->button.y = lastmy;
+							break;
+						case PAD_START:
+							event->type = SDL_KEYDOWN;
+							event->key.keysym.sym = SDLK_F1;
+							event->key.keysym.mod = 0;
+							break;
+						case PAD_SELECT:
+							event->type = SDL_KEYDOWN;
+							event->key.keysym.sym = SDLK_F3;
+							if (holding_R) {
+								event->key.keysym.mod = KMOD_LSHIFT;
+							}
+							else {
+								event->key.keysym.mod = 0;
+							}
 							break;
 						case PAD_LEFT:
 							event->type = SDL_KEYDOWN;
@@ -99,25 +98,9 @@ int PSP2_PollEvent(SDL_Event *event) {
 				if (event->jbutton.which==0) // Only Joystick 0 controls the game
 				{
 					switch (event->jbutton.button) {
-						case PAD_START:
 						case PAD_CIRCLE:
 							event->type = SDL_KEYUP;
 							event->key.keysym.sym = SDLK_ESCAPE;
-							event->key.keysym.mod = 0;
-							break;
-						case PAD_SELECT:
-							event->type = SDL_KEYUP;
-							event->key.keysym.sym = SDLK_F3;
-							event->key.keysym.mod = 0;
-							break;
-						case PAD_R:
-							event->type = SDL_KEYUP;
-							event->key.keysym.sym = SDLK_F3;
-							event->key.keysym.mod = KMOD_LSHIFT;
-							break;
-						case PAD_L:
-							event->type = SDL_KEYUP;
-							event->key.keysym.sym = SDLK_F1;
 							event->key.keysym.mod = 0;
 							break;
 						case PAD_CROSS:
@@ -125,6 +108,7 @@ int PSP2_PollEvent(SDL_Event *event) {
 							event->key.keysym.sym = SDLK_RETURN;
 							event->key.keysym.mod = 0;
 							break;
+						case PAD_L: // intentional fall-through
 						case PAD_SQUARE:
 							event->type = SDL_MOUSEBUTTONUP;
 							event->button.button = SDL_BUTTON_LEFT;
@@ -132,12 +116,29 @@ int PSP2_PollEvent(SDL_Event *event) {
 							event->button.x = lastmx;
 							event->button.y = lastmy;
 							break;
+						case PAD_R:
+							holding_R = 0; // intentional fall-through
 						case PAD_TRIANGLE:
 							event->type = SDL_MOUSEBUTTONUP;
 							event->button.button = SDL_BUTTON_RIGHT;
 							event->button.state = SDL_RELEASED;
 							event->button.x = lastmx;
 							event->button.y = lastmy;
+							break;
+						case PAD_START:
+							event->type = SDL_KEYUP;
+							event->key.keysym.sym = SDLK_F1;
+							event->key.keysym.mod = 0;
+							break;
+						case PAD_SELECT:
+							event->type = SDL_KEYUP;
+							event->key.keysym.sym = SDLK_F3;
+							if (holding_R) {
+								event->key.keysym.mod = KMOD_LSHIFT;
+							}
+							else {
+								event->key.keysym.mod = 0;
+							}
 							break;
 						case PAD_LEFT:
 							event->type = SDL_KEYUP;

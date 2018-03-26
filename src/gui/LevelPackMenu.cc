@@ -46,8 +46,8 @@ namespace enigma { namespace gui {
     static const char *helptext[] = {
         N_("Left column:"),              N_("Levelpack groups"),
         N_("Right columns:"),            N_("Levelpacks of selected group"),
-        N_("Left click (square):"),               N_("Select group or levelpack"),
-        N_("Right click (triangle):"),   N_("Configure group or levelpack"),
+        N_("Left click (square/L):"),               N_("Select group or levelpack"),
+        N_("Right click (triangle/R):"),   N_("Configure group or levelpack"),
         0
     };
 #else
