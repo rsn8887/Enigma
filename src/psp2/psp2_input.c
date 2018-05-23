@@ -189,18 +189,20 @@ void PSP2_HandleJoysticks() {
 		int xrel = hiresDX / slowdown;
 		int yrel = hiresDY / slowdown;
 
-		if (insideMenu) {
-			SDL_WarpMouse(lastmx + xrel, lastmy + yrel);
-		}
-		else
-		{
-			SDL_Event event;
-			event.type = SDL_MOUSEMOTION;
-			event.motion.x = lastmx + xrel;
-			event.motion.y = lastmy + yrel;
-			event.motion.xrel = xrel;
-			event.motion.yrel = yrel;
-			SDL_PushEvent(&event);
+		if (xrel || yrel) {
+			if (insideMenu) {
+				SDL_WarpMouse(lastmx + xrel, lastmy + yrel);
+			}
+			else
+			{
+				SDL_Event event;
+				event.type = SDL_MOUSEMOTION;
+				event.motion.x = lastmx + xrel;
+				event.motion.y = lastmy + yrel;
+				event.motion.xrel = xrel;
+				event.motion.yrel = yrel;
+				SDL_PushEvent(&event);
+			}
 		}
 
 		hiresDX %= slowdown;
