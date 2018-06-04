@@ -41,23 +41,23 @@ Vita-exclusive features
  
 Vita Controls (controls updated with version 1.08)
 =====
-Left analog stick = analog control of the marble and mouse pointer
-Square / L-trigger = select menu items, use object in game (left mouse button)
-Triangle / R-trigger = cycle through inventory items (right mouse button)
-Cross = ok in menu (return)
-Circle = back / in-game menu (escape key)
-Start = help screen (F1)
-Select = destroy marble and remove one life (F3)
-R-trigger + Select = restart level (shift-F3)
+Left analog stick = analog control of the marble and mouse pointer  
+Square / L-trigger = select menu items, use object in game (left mouse button)  
+Triangle / R-trigger = cycle through inventory items (right mouse button)  
+Cross = ok in menu (return)  
+Circle = back / in-game menu (escape key)  
+Start = help screen (F1)  
+Select = destroy marble and remove one life (F3)  
+R-trigger + Select = restart level (shift-F3)  
 
-Dpad in menu = quick-select menu items (arrow keys)
-Dpad left/right in game = quick-change mouse speed
-Dpad up/down in game = cycle through previous messages
+Dpad in menu = quick-select menu items (arrow keys)  
+Dpad left/right in game = quick-change mouse speed  
+Dpad up/down in game = cycle through previous messages  
 
-Front touch = analog control of the marble and mouse pointer
-Rear touch = analog control of the marble and mouse pointer
-Single finger tap = select menu items, use object in game (left mouse button)
-Dual finger tap = cycle through inventory items (right mouse button)
+Front touch = analog control of the marble and mouse pointer  
+Rear touch = analog control of the marble and mouse pointer  
+Single finger tap = select menu items, use object in game (left mouse button)  
+Dual finger tap = cycle through inventory items (right mouse button)  
 
 Dual finger tap works by holding one finger down and quickly tapping with a second finger somewhere else.
 
