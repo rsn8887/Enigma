@@ -2,7 +2,7 @@ Overview
 =====
 This is my Vita port of Enigma, a skill/puzzle game inspired by Oxyd on the Atari ST and Rock'n'Roll on the Amiga.
 
-![](https://s14.postimg.cc/llsv6w001/26_E2_CAC5-0_C90-4708-_A750-371508_ECDD51.jpg)
+![](screenshots/enigma_vita_4.jpg)
 
 The object of the game is to uncover pairs of identically colored Oxyd stones. Simple? Yes. Easy? Certainly not! Hidden traps, vast mazes, laser beams, and, most of all, countless hairy puzzles usually block your direct way to the Oxyd stones … If you are new to Enigma, you may want to take a look at a few [screenshots](http://www.nongnu.org/enigma/screenshots.html) or peek at the [user manual](http://www.nongnu.org/enigma/manual_1.20/manual/enigma.html).
 
