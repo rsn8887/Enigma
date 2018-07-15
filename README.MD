@@ -95,6 +95,10 @@ make enigma.vpk -j10
 
 Changelog
 =====
+1.10
+
+- Improve response to slow finger motion
+
 1.09
 
 - Improve controls with bluetooth mouse by re-compiling with latest SDL-Vita

@@ -382,6 +382,7 @@ set(LDFLAGS
         freetype
         ssl
         crypto
+        mikmod
         )
 
 if (BUILD_DEBUG)
