@@ -95,6 +95,10 @@ make enigma.vpk -j10
 
 Changelog
 =====
+1.11
+
+- Improve response to diagonal stick directions
+
 1.10
 
 - Improve response to slow finger motion
