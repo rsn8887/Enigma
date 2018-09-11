@@ -232,7 +232,7 @@ void rescaleAnalog(int *x, int *y, int dead) {
 	float analogY = (float) *y;
 	float deadZone = (float) dead;
 
-	float magnitude = sqrt(analogX * analogX + analogY * analogY);
+	float magnitude = sqrtf(analogX * analogX + analogY * analogY);
 	if (magnitude >= deadZone){
 		//adjust maximum magnitude
 		float absAnalogX = fabs(analogX);
@@ -246,7 +246,7 @@ void rescaleAnalog(int *x, int *y, int dead) {
 			maxX = (maxAxis * analogX) / absAnalogY;
 			maxY = maxAxis;
 		}
-		float maximum = sqrt(maxX * maxX + maxY * maxY);
+		float maximum = sqrtf(maxX * maxX + maxY * maxY);
 		if (maximum > 1.25f * maxAxis) maximum = 1.25f * maxAxis;
 		if (maximum < magnitude) maximum = magnitude;
 
