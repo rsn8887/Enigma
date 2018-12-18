@@ -37,7 +37,7 @@
 #include <cmath>
 #include <iostream>
 
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__) 
 #include "psp2_input.h"
 #endif
 
@@ -1371,7 +1371,12 @@ void StoneShadowCache::fill_image(StoneShadow *sh) {
         draw_image(i, gc, 0, 0);
 
     SDL_Surface *ss = s->get_surface();
+#ifdef USE_SDL2
+    SDL_SetColorKey(ss, SDL_TRUE, SDL_MapRGB(ss->format, 255, 255, 255));
+    SDL_SetSurfaceRLE(ss, SDL_TRUE);
+#else
     SDL_SetColorKey(ss, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(ss->format, 255, 255, 255));
+#endif
     SDL_SetAlpha(ss, SDL_SRCALPHA | SDL_RLEACCEL, 128);
 
     sh->image = s;
@@ -1391,7 +1396,12 @@ void StoneShadowCache::fill_image(StoneShadow *sh, Model *models[4]) {
     if (models[3])
         models[3]->draw_shadow(gc, 0, 0);
     SDL_Surface *ss = s->get_surface();
+#ifdef USE_SDL2
+    SDL_SetColorKey(ss, SDL_TRUE, SDL_MapRGB(ss->format, 255, 255, 255));
+    SDL_SetSurfaceRLE(ss, SDL_TRUE);
+#else
     SDL_SetColorKey(ss, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(ss->format, 255, 255, 255));
+#endif
     SDL_SetAlpha(ss, SDL_SRCALPHA | SDL_RLEACCEL, 128);
     sh->image = s;
 }
@@ -1480,8 +1490,11 @@ void DL_Shadows::new_world(int w, int h) {
     // the format in `StoneShadowCache::new_surface' !!!
     SDL_Surface *ss = SDL_CreateRGBSurface(SDL_SWSURFACE, tilew, tileh, 32, 0, 0, 0, 0);
     SDL_SetAlpha(ss, SDL_SRCALPHA, 128);
+#ifdef USE_SDL2
+    SDL_SetColorKey(ss, SDL_TRUE, SDL_MapRGB(ss->format, 255, 255, 255));
+#else
     SDL_SetColorKey(ss, SDL_SRCCOLORKEY, SDL_MapRGB(ss->format, 255, 255, 255));
-
+#endif
     buffer = Surface::make_surface(ss);
 }
 
@@ -1808,12 +1821,12 @@ void GameDisplay::redraw_all(Screen *scr) {
 
 void GameDisplay::redraw(ecl::Screen *screen) {
     GC gc(screen->get_surface());
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__)
     bool flip_buffers = false;
 #endif
 
     if (SDL_GetTicks() - last_frame_time > 10) {
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__)
         flip_buffers = true;
 #endif
         CommonDisplay::redraw();
@@ -1841,7 +1854,7 @@ void GameDisplay::redraw(ecl::Screen *screen) {
         draw_borders(gc);
     screen->flush_updates();
     redraw_everything = false;
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__)
     if (flip_buffers) {
         PSP2_HandleJoysticks();
         SDL_Flip(ecl::Screen::get_instance()->get_surface()->get_surface());

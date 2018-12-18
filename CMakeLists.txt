@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.0)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
+set(VERSION_MAJOR 1)
+set(VERSION_MINOR 12)
+
+if(BUILD_PSP2)
 if (NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     if (DEFINED ENV{VITASDK})
         set(CMAKE_TOOLCHAIN_FILE "$ENV{VITASDK}/share/vita.toolchain.cmake" CACHE PATH "toolchain file")
@@ -8,26 +12,46 @@ if (NOT DEFINED CMAKE_TOOLCHAIN_FILE)
         message(FATAL_ERROR "Please define VITASDK to point to your SDK path!")
     endif ()
 endif ()
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(BUILD_DEBUG true CACHE BOOL "Build with psp2shell support")
+endif()
+endif(BUILD_PSP2)
+
+if(BUILD_NX)
+    set(CMAKE_SYSTEM_NAME "Generic")
+    set(DEVKITPRO $ENV{DEVKITPRO})
+    set(CMAKE_SYSTEM_PROCESSOR "armv8-a")
+    set(CMAKE_C_COMPILER "${DEVKITPRO}/devkitA64/bin/aarch64-none-elf-gcc")
+    set(CMAKE_CXX_COMPILER "${DEVKITPRO}/devkitA64/bin/aarch64-none-elf-g++")
+    set(CMAKE_ASM_COMPILER "${DEVKITPRO}/devkitA64/bin/aarch64-none-elf-as")
+    set(CMAKE_AR "${DEVKITPRO}/devkitA64/bin/aarch64-none-elf-gcc-ar" CACHE STRING "")
+    set(CMAKE_RANLIB "${DEVKITPRO}/devkitA64/bin/aarch64-none-elf-gcc-ranlib" CACHE STRING "")
+    set(CMAKE_FIND_ROOT_PATH ${DEVKITPRO} ${DEVKITPRO}/devkitA64 ${DEVKITPRO}/libnx ${DEVKITPRO}/portlibs/switch)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+    set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "Shared libs not available")
+    link_directories(${DEVKITPRO}/libnx/lib ${DEVKITPRO}/portlibs/switch/lib)
+endif(BUILD_NX)
 
 execute_process(COMMAND "date" "+%Y.%m.%d"
         OUTPUT_VARIABLE BUILD_DATE OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(BUILD_DEBUG true CACHE BOOL "Build with psp2shell support")
-endif()
-
 enable_language(ASM)
 
 project(enigma)
-include("${VITASDK}/share/vita.cmake" REQUIRED)
+
+if(BUILD_PSP2)
+  enable_language(ASM)
+
+  include("${VITASDK}/share/vita.cmake" REQUIRED)
+endif(BUILD_PSP2)
 
 set(TITLEID "ENIGMA000")
 
 set(SRC_FILES
-    src/psp2/psp2-dirent.c
-    src/psp2/psp2_touch.c
     src/psp2/psp2_input.c
-    src/psp2/psp2_kbdvita.c
         src/AttributeDescriptor.cc
         src/DOMErrorReporter.cc
         src/DOMSchemaResolver.cc
@@ -68,9 +92,6 @@ set(SRC_FILES
         src/lua-global.cc
         src/lua.cc
         src/main.cc
-        src/net_enet.cc
-        src/netgame.cc
-        src/network.cc
         src/nls.cc
         src/options.cc
         src/ox_extra.cc
@@ -226,13 +247,6 @@ set(SRC_FILES
         src/lev/ScoreManager.cc
         src/lev/SubProxy.cc
         src/lev/VolatileIndex.cc
-        lib-src/vita-enet/callbacks.c
-        lib-src/vita-enet/host.c
-        lib-src/vita-enet/list.c
-        lib-src/vita-enet/packet.c
-        lib-src/vita-enet/peer.c
-        lib-src/vita-enet/protocol.c
-        lib-src/vita-enet/vita.c
         lib-src/lua/lapi.c
         lib-src/lua/lauxlib.c
         lib-src/lua/lbaselib.c
@@ -311,12 +325,10 @@ set(SRC_FILES
 )
 
 include_directories(
-        ${VITASDK}/arm-vita-eabi/include/
-        ${VITASDK}/arm-vita-eabi/include/SDL
-        ${VITASDK}/arm-vita-eabi/include/xercesc
         include
         src
         src/psp2
+        src/switch
         src/actors
         src/floors
         src/stones
@@ -324,7 +336,6 @@ include_directories(
         src/items
         src/lev
         lib-src
-        lib-src/vita-enet/include
         lib-src/lua
         lib-src/zipios++
         lib-src/zipios++/zipios++
@@ -332,6 +343,31 @@ include_directories(
         lib-src/enigma-core
         lib-src/oxydlib
 )
+
+if(BUILD_PSP2)
+  set(PSP2_SRC_FILES
+    src/psp2/psp2-dirent.c
+    src/psp2/psp2_touch.c
+    src/psp2/psp2_kbdvita.c
+    src/net_enet.cc
+    src/netgame.cc
+    src/network.cc
+    lib-src/vita-enet/callbacks.c
+    lib-src/vita-enet/host.c
+    lib-src/vita-enet/list.c
+    lib-src/vita-enet/packet.c
+    lib-src/vita-enet/peer.c
+    lib-src/vita-enet/protocol.c
+    lib-src/vita-enet/vita.c
+  )  
+  set(SRC_FILES ${PSP2_SRC_FILES} ${SRC_FILES})
+
+  include_directories(
+    ${VITASDK}/arm-vita-eabi/include/
+    ${VITASDK}/arm-vita-eabi/include/SDL
+    ${VITASDK}/arm-vita-eabi/include/xercesc
+    lib-src/vita-enet/include
+  )
 
 set(FLAGS
         -std=c++11
@@ -409,3 +445,115 @@ add_custom_target(${PROJECT_NAME}.vpk
 #        COMMAND cp -r ${CMAKE_SOURCE_DIR}/data vpk/data
         COMMAND cd vpk && zip -r ../enigma.vpk . && cd ..
         )
+endif(BUILD_PSP2)
+
+if(BUILD_NX)
+  set(NX_SRC_FILES
+    src/switch/switch_touch.c
+    src/switch/switch_kbd.c
+    src/switch/sdl2_to_sdl1.cpp
+  )
+  set(SRC_FILES ${NX_SRC_FILES} ${SRC_FILES})
+
+  include_directories(
+    ${DEVKITPRO}/portlibs/switch/include/SDL2
+    ${DEVKITPRO}/libnx/include
+    ${DEVKITPRO}/portlibs/switch/include
+  )
+
+  add_definitions(
+    -D__SWITCH__
+    -DUSE_SDL2
+    -DSYSTEM_DATA_DIR="/switch/enigma/data"
+    -DDOCDIR="/switch/enigma/doc"
+    -DLOCALEDIR="/switch/enigma/locale"
+  #        -DCXXLUA
+    -DHAVE_STDINT_H
+    -DHAVE_STDLIB_H
+    -DHAVE_STRING_H
+    -DHAVE_LIBXERCES_C
+    -DHAVE_LIBSDL_TTF
+    -DHAVE_DIRENT_H
+    -DHAVE_SYS_TYPES_H
+    -DPACKAGE="enigma"
+    -DHAS_SOCKLEN_T
+    -DPACKAGE_NAME="enigma"
+    -DPACKAGE_STRING="enigma 1.21"
+    -DPACKAGE_TARNAME="enigma"
+    -DPACKAGE_URL=""
+    -DPACKAGE_VERSION="1.21"
+  )
+
+  set(FLAGS
+    -Wno-write-strings
+    -march=armv8-a
+    -mtune=cortex-a57
+    -mtp=soft
+#-fPIE is neccessary to prevent crash on startup
+    -fPIE
+    -O3
+    -ffast-math
+    -fno-asynchronous-unwind-tables
+    -funroll-loops
+    -fno-unwind-tables
+    -fno-optimize-sibling-calls
+    -funsafe-math-optimizations
+    -mlittle-endian
+    -ffunction-sections
+  )
+
+  set(LIBS
+    SDL2_image
+    SDL2_ttf
+    SDL2_mixer
+    SDL2 
+    EGL
+    GLESv2
+    glapi
+    drm_nouveau
+    stdc++
+    xerces-c
+    curl
+    png
+    jpeg
+    z
+    m
+    c
+    vorbisidec
+    ogg
+    modplug
+    mpg123
+    freetype
+    ssl
+    crypto
+    bz2
+    nx
+  )
+
+  foreach(flag ${FLAGS})
+    set(FLAGS_GENERAL "${FLAGS_GENERAL} ${flag}")
+  endforeach(flag ${FLAGS})
+
+  #set(CMAKE_C_FLAGS "${FLAGS_GENERAL}" CACHE STRING "C Flags" FORCE)
+  #set(CMAKE_CXX_FLAGS "${FLAGS_GENERAL}" CACHE STRING "C++ Flags" FORCE)
+
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${FLAGS_GENERAL} -specs=${DEVKITPRO}/libnx/switch.specs --verbose")
+  
+  add_executable(${PROJECT_NAME}.elf ${SRC_FILES})
+  target_compile_options(${PROJECT_NAME}.elf PRIVATE ${FLAGS})
+  target_link_libraries(${PROJECT_NAME}.elf PRIVATE ${LIBS})
+  add_custom_target(${PROJECT_NAME}.nro
+    DEPENDS ${PROJECT_NAME}.elf
+    COMMAND ${DEVKITPRO}/tools/bin/nacptool --create "${PROJECT_NAME}" "rsn8887" "${VERSION_MAJOR}.${VERSION_MINOR}" ${PROJECT_NAME}.nacp
+    COMMAND ${DEVKITPRO}/tools/bin/elf2nro ${PROJECT_NAME}.elf ${PROJECT_NAME}.nro --icon=${CMAKE_SOURCE_DIR}/switchdata/icon0.jpg --nacp=${PROJECT_NAME}.nacp
+  )
+  add_custom_target(${PROJECT_NAME}_switch.zip
+    DEPENDS ${PROJECT_NAME}.nro
+    COMMAND rm -rf ${CMAKE_BINARY_DIR}/release/${PROJECT_NAME}
+    COMMAND mkdir -p ${CMAKE_BINARY_DIR}/release/${PROJECT_NAME}
+    COMMAND cp -f ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.nro ${CMAKE_BINARY_DIR}/release/${PROJECT_NAME}/${PROJECT_NAME}.nro
+    COMMAND unzip ${CMAKE_SOURCE_DIR}/switchdata/data.zip -d${CMAKE_BINARY_DIR}/release/
+    COMMAND cd ${CMAKE_BINARY_DIR}/release && zip -r ../${PROJECT_NAME}_${VERSION_MAJOR}.${VERSION_MINOR}_switch.zip ${PROJECT_NAME} && cd ${CMAKE_BINARY_DIR}
+  )
+endif(BUILD_NX)
+

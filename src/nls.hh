@@ -23,7 +23,7 @@ namespace nls
         const char *localename;
         const char *flagimage;
     };
- #ifdef __vita__
+ #if defined(__vita__) || defined(__SWITCH__)
     const Language languages[] = {
         { "default",    "",      "par" },
     };

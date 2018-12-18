@@ -47,7 +47,9 @@
 #include "lev/PersistentIndex.hh"
 #include "lev/ScoreManager.hh"
 
+#ifndef __SWITCH__
 #include "enet/enet.h"
+#endif
 
 #include <locale.h>
 #include <cstdio>
@@ -79,6 +81,11 @@
 #include "psp2_touch.h"
 SDL_Joystick *vitaJoy0 = NULL;
 int _newlib_heap_size_user = 192 * 1024 * 1024;
+#endif
+
+#ifdef __SWITCH__
+#include "switch_touch.h"
+SDL_Joystick *vitaJoy0 = NULL;
 #endif
 
 using namespace std;
@@ -257,6 +264,8 @@ void Application::init(int argc, char **argv)
     sscanf(PACKAGE_VERSION, "%4lf", &enigmaVersion);
 #ifdef __vita__
     progCallPath = "ux0:/data/enigma";
+#elif defined(__SWITCH__)
+    progCallPath = "/switch/enigma";
 #else
     progCallPath = argv[0];
 #endif
@@ -287,7 +296,6 @@ void Application::init(int argc, char **argv)
         else
             args.push_back(argv[i]);
     }
-
     // parse commandline arguments -- needs args
     AP ap;
     ap.parse();
@@ -317,6 +325,11 @@ void Application::init(int argc, char **argv)
 #ifdef __vita__
     ap.preffilename = "ux0:/data/enigma";
 #endif
+
+#ifdef __SWITCH__
+    ap.preffilename = "/switch/enigma";
+#endif
+
     initSysDatapaths(ap.preffilename);
 
     // redirect stdout, stderr
@@ -406,7 +419,7 @@ void Application::init(int argc, char **argv)
     int sdl_flags = SDL_INIT_VIDEO;
     if (enigma::WizardMode)
         sdl_flags |= SDL_INIT_NOPARACHUTE;
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__)
     sdl_flags |= SDL_INIT_JOYSTICK;
 #endif
 
@@ -415,26 +428,30 @@ void Application::init(int argc, char **argv)
         exit(1);
     }
 
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__)
     SDL_JoystickEventState(SDL_ENABLE);
     vitaJoy0 = SDL_JoystickOpen(0);
 #endif
 
     std::atexit(SDL_Quit);
+#ifndef USE_SDL2
     SDL_EnableUNICODE(1);
     const SDL_version* vi = SDL_Linked_Version();
     Log << ecl::strf("SDL Version: %u.%u.%u\n", vi->major, vi->minor, vi->patch);
 
     vi = TTF_Linked_Version();
     Log <<  ecl::strf("SDL_ttf Version: %u.%u.%u\n", vi->major, vi->minor, vi->patch);
+#endif
     if(TTF_Init() == -1) {
         fprintf(stderr, "Couldn't initialize SDL_ttf: %s\n", TTF_GetError());
         exit(1);
     }
 
+#ifndef USE_SDL2
     vi = IMG_Linked_Version();
     Log <<  ecl::strf("SDL_image Version: %u.%u.%u\n", vi->major, vi->minor, vi->patch);
-#ifdef SDL_IMG_INIT
+#endif
+#if defined(SDL_IMG_INIT) || defined(USE_SDL2)
     int img_flags = IMG_INIT_PNG | IMG_INIT_JPG;
     if ((IMG_Init(img_flags) & img_flags) != img_flags) {
         fprintf(stderr, "Couldn't initialize SDL_image: %s\n", IMG_GetError());
@@ -447,6 +464,7 @@ void Application::init(int argc, char **argv)
     video::SetMouseCursor(enigma::LoadImage("cur-magic"), 4, 4);
     video::ShowMouse();
     SDL_ShowCursor(0);
+
     errorInit = true;
 
     // ----- Initialize sound subsystem
@@ -460,11 +478,13 @@ void Application::init(int argc, char **argv)
         exit (1);
     }
 
+#ifndef __SWITCH__
     // ----- Initialize UDP network layer
     if (enet_initialize() != 0) {
         fprintf (stderr, "An error occurred while initializing ENet.\n");
         exit (1);
     }
+#endif
 
     // ----- Load models
     display::Init(ap.show_fps);
@@ -939,11 +959,13 @@ void Application::shutdown()
     app.errorInit = false;
     video::Shutdown();
     sound::Shutdown();
+#ifndef __SWITCH__
     enet_deinitialize();
+#endif
     enigma::ShutdownCurl();
     lua::ShutdownGlobal();
     XMLPlatformUtils::Terminate();
-#ifdef SDL_IMG_INIT
+#if defined(SDL_IMG_INIT) || defined(USE_SDL2)
     IMG_Quit();
 #endif
     ClearFontCache();

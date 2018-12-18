@@ -9,7 +9,7 @@
 
 #include <config.h>
 
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__)
 #undef HAVE_SETENV
 #undef HAVE_PUTENV
 #endif

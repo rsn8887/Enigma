@@ -26,12 +26,20 @@ int PSP2_PollEvent(SDL_Event *event) {
 				if (event->jbutton.which==0) // Only Joystick 0 controls the game
 				{
 					switch (event->jbutton.button) {
+#ifdef __SWITCH__
+						case PAD_CROSS:
+#else
 						case PAD_CIRCLE:
+#endif
 							event->type = SDL_KEYDOWN;
 							event->key.keysym.sym = SDLK_ESCAPE;
 							event->key.keysym.mod = 0;
 							break;
+#ifdef __SWITCH__
+						case PAD_CIRCLE:
+#else
 						case PAD_CROSS:
+#endif
 							event->type = SDL_KEYDOWN;
 							event->key.keysym.sym = SDLK_RETURN;
 							event->key.keysym.mod = 0;
@@ -98,12 +106,20 @@ int PSP2_PollEvent(SDL_Event *event) {
 				if (event->jbutton.which==0) // Only Joystick 0 controls the game
 				{
 					switch (event->jbutton.button) {
+#ifdef __SWITCH__
+						case PAD_CROSS:
+#else
 						case PAD_CIRCLE:
+#endif
 							event->type = SDL_KEYUP;
 							event->key.keysym.sym = SDLK_ESCAPE;
 							event->key.keysym.mod = 0;
 							break;
+#ifdef __SWITCH__
+						case PAD_CIRCLE:
+#else
 						case PAD_CROSS:
+#endif
 							event->type = SDL_KEYUP;
 							event->key.keysym.sym = SDLK_RETURN;
 							event->key.keysym.mod = 0;
@@ -191,7 +207,13 @@ void PSP2_HandleJoysticks() {
 
 		if (xrel || yrel) {
 			if (insideMenu) {
-				SDL_WarpMouse(lastmx + xrel, lastmy + yrel);
+				int newx = lastmx + xrel;
+				int newy = lastmy + yrel;
+				if (newx < 0)
+					newx = 0;
+				if (newy < 0)
+					newy = 0;
+				SDL_WarpMouse(newx, newy);
 			}
 			else
 			{

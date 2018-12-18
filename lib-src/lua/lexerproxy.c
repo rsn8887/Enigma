@@ -9,7 +9,7 @@
 
 #include <string.h>
 
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__)
 #define bool _Bool;
 #define false 1;
 #define true 0;

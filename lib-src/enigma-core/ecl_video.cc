@@ -295,7 +295,12 @@ void Surface::blit(const GS &gs, int x, int y, const Surface *src) {
 
 void Surface::set_color_key(int r, int g, int b) {
     Uint32 color = map_color(r, g, b);
+#ifdef USE_SDL2
+    SDL_SetColorKey(get_surface(), SDL_TRUE, color);
+    SDL_SetSurfaceRLE(get_surface(), SDL_TRUE);
+#else
     SDL_SetColorKey(get_surface(), SDL_SRCCOLORKEY | SDL_RLEACCEL, color);
+#endif
 }
 
 void Surface::set_alpha(int a) {
@@ -412,8 +417,11 @@ Surface *ecl::Duplicate(const Surface *s) {
     SDL_Surface *copy = SDL_ConvertSurface(sdls, sdls->format, sdls->flags);
 
     if (sdls->format->palette != 0)
+#ifdef USE_SDL2
+        SDL_SetPaletteColors(copy->format->palette, sdls->format->palette->colors, 0, sdls->format->palette->ncolors);
+#else
         SDL_SetColors(copy, sdls->format->palette->colors, 0, sdls->format->palette->ncolors);
-
+#endif
     return Surface::make_surface(copy);
 }
 
@@ -475,18 +483,32 @@ static SDL_Surface *CropSurface(SDL_Surface *surface, SDL_Rect rect, SDL_PixelFo
 
     /* Save the original surface color key and alpha */
     surface_flags = surface->flags;
+#ifdef USE_SDL2
+    if (SDL_GetColorKey(surface, &colorkey) != -1) {
+#else
     if ((surface_flags & SDL_SRCCOLORKEY) == SDL_SRCCOLORKEY) {
+#endif
         /* Convert colourkeyed surfaces to RGBA if requested */
         if ((flags & SDL_SRCCOLORKEY) != SDL_SRCCOLORKEY && format->Amask) {
             surface_flags &= ~SDL_SRCCOLORKEY;
         } else {
+#ifdef USE_SDL2
+            SDL_GetColorKey(surface, &colorkey);
+#else
             colorkey = surface->format->colorkey;
+#endif
             SDL_SetColorKey(surface, 0, 0);
         }
     }
+#ifdef USE_SDL2
+    if (Surface_HasBlendMode(surface)) {
+        SDL_GetSurfaceAlphaMod(surface, &alpha);
+        SDL_SetAlpha(surface, 0, 255);
+#else
     if ((surface_flags & SDL_SRCALPHA) == SDL_SRCALPHA) {
         alpha = surface->format->alpha;
         SDL_SetAlpha(surface, 0, 0);
+#endif
     }
 
     /* Copy over the image data */
@@ -495,18 +517,38 @@ static SDL_Surface *CropSurface(SDL_Surface *surface, SDL_Rect rect, SDL_PixelFo
     bounds.w = rect.w;
     bounds.h = rect.h;
     SDL_LowerBlit(surface, &rect, convert, &bounds);
-
+#ifdef USE_SDL2
+    if (SDL_GetColorKey(surface, &colorkey) != -1) {
+#else
     if ((surface_flags & SDL_SRCCOLORKEY) == SDL_SRCCOLORKEY) {
         Uint32 cflags = surface_flags & (SDL_SRCCOLORKEY | SDL_RLEACCELOK);
+#endif
         if (convert != NULL) {
             Uint8 keyR, keyG, keyB;
 
             SDL_GetRGB(colorkey, surface->format, &keyR, &keyG, &keyB);
+#ifdef USE_SDL2
+            SDL_SetColorKey(convert, SDL_TRUE,
+                            SDL_MapRGB(convert->format, keyR, keyG, keyB));
+#else
             SDL_SetColorKey(convert, cflags | (flags & SDL_RLEACCELOK),
                             SDL_MapRGB(convert->format, keyR, keyG, keyB));
+#endif
         }
+#ifdef USE_SDL2
+        SDL_SetColorKey(surface, SDL_TRUE, colorkey);
+#else
         SDL_SetColorKey(surface, cflags, colorkey);
+#endif
     }
+#ifdef USE_SDL2
+    if (Surface_HasBlendMode(surface)) {
+        if (convert != NULL) {
+            SDL_SetAlpha(convert, 0, alpha);
+        }
+        SDL_SetAlpha(surface, 0, alpha);
+    }
+#else
     if ((surface_flags & SDL_SRCALPHA) == SDL_SRCALPHA) {
         Uint32 aflags = surface_flags & (SDL_SRCALPHA | SDL_RLEACCELOK);
         if (convert != NULL) {
@@ -514,6 +556,7 @@ static SDL_Surface *CropSurface(SDL_Surface *surface, SDL_Rect rect, SDL_PixelFo
         }
         SDL_SetAlpha(surface, aflags, alpha);
     }
+#endif
 
     /* We're ready to go! */
     return (convert);
@@ -549,12 +592,25 @@ Surface *ecl::LoadImage(SDL_RWops *src, int freesrc) {
 Surface *ecl::LoadImage(SDL_Surface *tmp) {
     if (tmp != NULL) {
         SDL_Surface *img;
-
+#ifdef USE_SDL2
+        Uint32 colorkey;
+        if (Surface_HasBlendMode(tmp)) {
+            SDL_SetAlpha(tmp, SDL_RLEACCEL, 255);
+            SDL_SetSurfaceRLE(tmp, SDL_TRUE);
+#else
         if (tmp->flags & SDL_SRCALPHA) {
             SDL_SetAlpha(tmp, SDL_RLEACCEL, 0);
+#endif
             img = SDL_DisplayFormatAlpha(tmp);
+#ifdef USE_SDL2
+        } else if (SDL_GetColorKey(tmp, &colorkey) != -1) {
+            SDL_GetColorKey(tmp, &colorkey);
+            SDL_SetColorKey(tmp, SDL_TRUE, colorkey);
+            SDL_SetSurfaceRLE(tmp, SDL_TRUE);
+#else
         } else if (tmp->flags & SDL_SRCCOLORKEY) {
             SDL_SetColorKey(tmp, SDL_SRCCOLORKEY | SDL_RLEACCEL, tmp->format->colorkey);
+#endif
             img = SDL_DisplayFormat(tmp);
         } else
             img = SDL_DisplayFormat(tmp);
@@ -568,7 +624,7 @@ Surface *ecl::LoadImage(SDL_Surface *tmp) {
 
 Surface *ecl::MakeSurface(int w, int h, int bipp, const RGBA_Mask &mask) {
     SDL_Surface *surface =
-        SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, bipp, mask.r, mask.g, mask.g, mask.a);
+        SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, bipp, mask.r, mask.g, mask.b, mask.a);
     if (surface == 0)
         return 0;
     return Surface::make_surface(surface);

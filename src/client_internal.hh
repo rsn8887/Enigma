@@ -19,7 +19,9 @@
 #include "gui/Menu.hh"
 #include "video.hh"
 #include "ecl_buffer.hh"
+#ifndef __SWITCH__
 #include "enet/enet.h"
+#endif
 #include <vector>
 
 namespace enigma {
@@ -173,8 +175,10 @@ private:
     std::string m_error_message;
 
     std::unique_ptr<video::TransitionEffect> m_effect;
+#ifndef __SWITCH__
     ENetHost *m_network_host;
     ENetPeer *m_server;
+#endif
 
 private:
     Client(const Client &);

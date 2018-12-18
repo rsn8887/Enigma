@@ -118,11 +118,21 @@ Surface *SurfaceCache::acquire(const std::string &name) {
         SDL_Surface *s = IMG_Load(filename.c_str());
         if (s) {
             SDL_Surface *img = nullptr;
+#ifdef USE_SDL2
+            if (Surface_HasBlendMode(s)) {
+#else
             if (s->flags & SDL_SRCALPHA) {
+#endif
                 img = SDL_DisplayFormatAlpha(s);
             } else {
+#ifdef USE_SDL2
+                SDL_SetColorKey(s, SDL_TRUE,
+                                SDL_MapRGB(s->format, 255, 0, 255));
+                SDL_SetSurfaceRLE(s, SDL_FALSE);
+#else
                 SDL_SetColorKey(s, SDL_SRCCOLORKEY,  //|SDL_RLEACCEL,
                                 SDL_MapRGB(s->format, 255, 0, 255));
+#endif
                 img = SDL_DisplayFormat(s);
             }
             if (img) {

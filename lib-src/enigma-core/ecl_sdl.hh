@@ -24,6 +24,10 @@
 #include "ecl_geom.hh"
 #include "SDL.h"
 
+#ifdef USE_SDL2
+#include "sdl2_to_sdl1.h"
+#endif
+
 namespace sdl {
 
 class EventHandler {

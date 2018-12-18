@@ -32,6 +32,13 @@
 
 #ifdef __vita__
 #include "psp2_touch.h"
+#endif
+
+#ifdef __SWITCH__
+#include "switch_touch.h"
+#endif
+
+#if defined(__vita__) || defined(__SWITCH__) 
 #include "psp2_input.h"
 #define SDL_PollEvent PSP2_PollEvent
 extern int insideMenu;
@@ -89,9 +96,17 @@ namespace enigma { namespace gui {
             SCREEN->flush_updates();
 #ifdef __vita__
             psp2PollTouch();
+#endif
+#if defined(__vita__) || defined(__SWITCH__)
             insideMenu = 1;
 #endif
+#ifdef __SWITCH__
+            SWITCH_FinishSimulatedMouseClicks();
+#endif
             while (SDL_PollEvent(&e)) {
+#ifdef __SWITCH__
+                SWITCH_HandleTouch(&e);
+#endif
                 handle_event(e);
                 if (app.bossKeyPressed) return true;
             }
@@ -99,7 +114,7 @@ namespace enigma { namespace gui {
             if(active_widget) active_widget->tick(0.01);
             if(key_focus_widget && (key_focus_widget != active_widget)) key_focus_widget->tick(0.01);
             tick(0.01);
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__) 
             static Uint32 last_menu_draw_time = 0;
             if (SDL_GetTicks() - last_menu_draw_time > 10) {
                 PSP2_HandleJoysticks();
@@ -207,9 +222,11 @@ namespace enigma { namespace gui {
                 track_active_widget( e.button.x, e.button.y );
                 if (active_widget) active_widget->on_event(e);
                 break;
+#ifndef USE_SDL2
             case SDL_VIDEOEXPOSE:
                 draw_all();
                 break;
+#endif
             default:
                 if (active_widget) active_widget->on_event(e);
         }

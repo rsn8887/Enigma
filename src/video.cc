@@ -43,8 +43,15 @@
 
 #ifdef __vita__
 #include <vita2d.h>
+#endif
+
+#if defined(__vita__) || defined(__SWITCH__)
 #include "psp2_input.h"
 #define SDL_PollEvent PSP2_PollEvent
+#endif
+
+#ifdef USE_SDL2
+#include "sdl2_to_sdl1.h"
 #endif
 
 #define SCREEN ecl::Screen::get_instance()
@@ -92,7 +99,7 @@ void Video_SDL::set_caption(const char *str) {
 }
 
 bool Video_SDL::init(int w, int h, int bpp, bool fullscreen) {
-#ifndef MACOSX
+#if !defined(MACOSX) && !defined(USE_SDL2)
     static bool firstInit = true;
     if (firstInit) {
         // Set the caption icon -- due to SDL doc it has to be set before first SDL_SetVideoMode()
@@ -104,8 +111,7 @@ bool Video_SDL::init(int w, int h, int bpp, bool fullscreen) {
         firstInit = false;
         std::string iconpath;
         ecl::Surface *es = NULL;
-        if (app.resourceFS->findFile("gfx/enigma_marble.png",
-                                     iconpath)) {  // cannot use ecl::findImageFile !
+        if (app.resourceFS->findFile("gfx/enigma_marble.png", iconpath)) {  // cannot use ecl::findImageFile !
             es = ecl::LoadImage(iconpath.c_str());
             if (es) {
                 SDL_WM_SetIcon(es->get_surface(), NULL);
@@ -113,7 +119,6 @@ bool Video_SDL::init(int w, int h, int bpp, bool fullscreen) {
         }
     }
 #endif
-
     SDL_WM_SetCaption(caption.c_str(), 0);
 
     Uint32 flags = SDL_SWSURFACE;
@@ -126,9 +131,11 @@ bool Video_SDL::init(int w, int h, int bpp, bool fullscreen) {
     if (bpp == 0)
         return false;
 
-#ifdef __vita__
+#if defined(__vita__)
     vita2d_texture_set_alloc_memblock_type(SCE_KERNEL_MEMBLOCK_TYPE_USER_RW);
+#endif
 
+#if defined(__vita__) || defined(__SWITCH__)
     sdlScreen = SDL_SetVideoMode(w, h, 16, SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_FULLSCREEN);
     float sh = (float) 544;
     float sw = (float)w*((float)544/(float)h);
@@ -166,7 +173,11 @@ bool Video_SDL::init(int w, int h, int bpp, bool fullscreen) {
 
 bool Video_SDL::is_fullscreen() const {
     if (sdlScreen)
+#ifdef USE_SDL2
+        return 1;
+#else
         return (sdlScreen->flags & SDL_FULLSCREEN) != 0;
+#endif
     return false;
 }
 
@@ -567,7 +578,11 @@ bool vm_available(int w, int h, int &bpp, bool fullscreen) {
 // This function is installed as an event filter by video::Init. It intercepts
 // mouse motions, which are used to update the position of the mouse cursor
 // (but passed on to the event queue).
+#ifdef USE_SDL2
+int event_filter(void* userdata, SDL_Event *e) {
+#else
 int event_filter(const SDL_Event *e) {
+#endif
     if (e->type == SDL_MOUSEMOTION) {
         cursor->move(e->motion.x, e->motion.y);
         cursor->redraw();
@@ -782,7 +797,7 @@ void video::Init() {
 // But it proves to be the only working position for Linux.
 // It works for Windows besides XP with selected "WindowsXP Design", too.
 // Mac icon is set via Makefile
-#ifndef MACOSX
+#if !defined(MACOSX) && !defined(__SWITCH__)
     Surface *icn = enigma::GetImage("enigma_marble");
     if (icn)
         SDL_WM_SetIcon(icn->get_surface(), NULL);
@@ -793,13 +808,20 @@ void video::Init() {
     SDL_GetMouseState(&x, &y);
     cursor->move(x, y);
 
+#ifdef USE_SDL2
+    SDL_SetEventFilter(event_filter, NULL);
+#else
     SDL_SetEventFilter(event_filter);
-
+#endif
     UpdateGamma();
 }
 
 void video::Shutdown() {
+#ifdef USE_SDL2
+    SDL_SetEventFilter(0, NULL);
+#else
     SDL_SetEventFilter(0);
+#endif
     delete video_engine;
     delete cursor;
     delete back_buffer;

@@ -545,7 +545,7 @@ namespace enigma { namespace gui {
 
     void MainMenu::tick(double /* dtime */)
     {
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__)
         return;
 #else
         bool isFullScreen = app.prefs->getBool("FullScreen");

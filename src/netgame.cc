@@ -30,7 +30,7 @@
 #include "SDL.h"
 #include <string>
 
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__)
 #include "psp2_input.h"
 #define SDL_PollEvent PSP2_PollEvent
 #endif

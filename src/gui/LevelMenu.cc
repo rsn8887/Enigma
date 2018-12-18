@@ -205,6 +205,22 @@ namespace enigma { namespace gui {
         N_("Right click (triangle/R):"),   N_("Inspect selected level"),
         0
     };
+#elif defined(__SWITCH)
+    static const char *helptext_levelmenu[] = {
+        N_("Escape (A):"),              N_("Skip to main menu"),
+        "F1 (plus):",                      N_("Show this help"),
+        "F5:",                      0, // see below
+        "F7:",                      N_("Update levelpack"),
+        N_("Arrows (dpad):"),              N_("Select level"),
+        N_("Return (B):"),              N_("Play selected level"),
+        N_("Back/Space:"),          N_("Previous/next levelpack"),
+        "u",                        N_("Mark current level as unsolved"),
+    //    "s",                        N_("Mark current level as Solved"),
+        N_("Alt+Return:"),          N_("Switch between fullscreen and window"),
+        N_("Left click (Y/L):"),               N_("Play selected level"),
+        N_("Right click (X/R):"),   N_("Inspect selected level"),
+        0
+    };
 #else
     static const char *helptext_levelmenu[] = {
         N_("Escape:"),              N_("Skip to main menu"),

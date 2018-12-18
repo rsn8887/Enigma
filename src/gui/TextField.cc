@@ -36,6 +36,10 @@
 #include "psp2_kbdvita.h"
 #endif
 
+#ifdef __SWITCH__
+#include "switch_kbd.h"
+#endif
+
 using namespace enigma::gui;
 using namespace ecl;
 using namespace std;
@@ -134,12 +138,18 @@ bool TextField::on_event(const SDL_Event &e) {
     switch (e.type) {
         case SDL_MOUSEBUTTONDOWN: {
             // set cursor
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__)
             handeled = true;
             std::string newText = "";
-            char *imeResult = kbdvita_get("Enter Text", const_cast<char *>(getText().c_str()), 255);
-            if (imeResult != NULL) {
-                newText = imeResult;
+#ifdef __SWITCH__
+            char kbdResult[255] = {'\0'};
+            kbdswitch_get("Enter Text", const_cast<char *>(getText().c_str()), 255, 0, kbdResult);
+#endif
+#ifdef __vita__
+            char *kbdResult = kbdvita_get("Enter Text", const_cast<char *>(getText().c_str()), 255);
+#endif
+            if (kbdResult != NULL) {
+                newText = kbdResult;
                 set_text(newText);
                 invalidate();
                 modified = true;

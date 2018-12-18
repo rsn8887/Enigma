@@ -43,14 +43,23 @@
 #include "ecl_sdl.hh"
 #include "ecl_video.hh"
 
+#ifndef __SWITCH__
 #include "enet/enet.h"
 #include "enet_ver.hh"
+#endif
 
 #include <cctype>
 #include <cstring>
 
 #ifdef __vita__
 #include "psp2_touch.h"
+#endif
+
+#ifdef __SWITCH__
+#include "switch_touch.h"
+#endif
+
+#if defined(__vita__) || defined(__SWITCH__)
 #include "psp2_input.h"
 #define SDL_PollEvent PSP2_PollEvent
 extern int insideMenu;
@@ -112,11 +121,15 @@ const char HSEP = '^';  // history separator (use character that user cannot use
 
 Client::Client()
 : m_state(cls_idle), m_levelname(), m_hunt_against_time(0), m_cheater(false), m_user_input() {
+#ifndef __SWITCH__
     m_network_host = 0;
+#endif
 }
 
 Client::~Client() {
+#ifndef __SWITCH__
     network_stop();
+#endif
 }
 
 void Client::init() {
@@ -136,6 +149,7 @@ void Client::shutdown() {
                                commandHistory[i].c_str());
 }
 
+#ifndef __SWITCH__
 bool Client::network_start() {
     if (m_network_host)
         return true;
@@ -196,6 +210,7 @@ void Client::network_stop() {
     if (m_server)
         enet_peer_reset(m_server);
 }
+#endif
 
 /* ---------- Event handling ---------- */
 
@@ -203,9 +218,18 @@ void Client::handle_events() {
     SDL_Event e;
 #ifdef __vita__
     psp2PollTouch();
+#endif
+#if defined(__vita__) || defined(__SWITCH__)
     insideMenu = 0;
 #endif
+#ifdef __SWITCH__
+	// need to call this once per frame
+	SWITCH_FinishSimulatedMouseClicks();
+#endif
     while (SDL_PollEvent(&e)) {
+#ifdef __SWITCH__
+		SWITCH_HandleTouch(&e);
+#endif
         switch (e.type) {
         case SDL_KEYDOWN: on_keydown(e); break;
         case SDL_MOUSEMOTION:
@@ -217,6 +241,7 @@ void Client::handle_events() {
             break;
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP: on_mousebutton(e); break;
+#ifndef USE_SDL2
         case SDL_ACTIVEEVENT: {
             update_mouse_button_state();
             if (e.active.gain == 0 && !video::IsFullScreen())
@@ -228,7 +253,7 @@ void Client::handle_events() {
             display::RedrawAll(video::GetScreen());
             break;
         }
-
+#endif
         case SDL_QUIT:
             client::Msg_Command("abort");
             app.bossKeyPressed = true;
@@ -494,6 +519,17 @@ static const char *helptext_ingame[] = {
     N_("Right mouse (triangle/R):"), N_("Rotate inventory items"), N_("Escape (circle):"), N_("Show game menu"),
     N_("Shift+Escape:"), N_("Quit game immediately"), N_("F1 (start):"), N_("Show this help"), N_("F3 (select):"),
     N_("Kill current marble"), N_("Shift+F3 (R+select):"), N_("Restart the current level"), N_("F4:"),
+    N_("Skip to next level"), N_("F5:"), 0,  // see below
+    N_("F6:"), N_("Jump back to last level"), N_("F10:"), N_("Make screenshot"),
+    N_("Left/right arrow (dpad):"), N_("Change mouse speed"), N_("Alt+x:"), N_("Return to level menu"),
+    //    N_("Alt+Return:"),              N_("Switch between fullscreen and window"),
+    0};
+#elif defined(__SWITCH__)
+static const char *helptext_ingame[] = {
+    N_("Left mouse (Y/L):"), N_("Activate/drop leftmost inventory item"),
+    N_("Right mouse (X/R):"), N_("Rotate inventory items"), N_("Escape (B):"), N_("Show game menu"),
+    N_("Shift+Escape:"), N_("Quit game immediately"), N_("F1 (Plus):"), N_("Show this help"), N_("F3 (Minus):"),
+    N_("Kill current marble"), N_("Shift+F3 (R+Minus):"), N_("Restart the current level"), N_("F4:"),
     N_("Skip to next level"), N_("F5:"), 0,  // see below
     N_("F6:"), N_("Jump back to last level"), N_("F10:"), N_("Make screenshot"),
     N_("Left/right arrow (dpad):"), N_("Change mouse speed"), N_("Alt+x:"), N_("Return to level menu"),

@@ -46,7 +46,7 @@ using std::string;
 const char *ecl::PathSeparator = "\\";  // for path assembly
 const char *ecl::PathsSeparator = ";";  // for listing paths in a string
 #else
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__)
 const char *ecl::PathSeparator = "/";   // for path assembly
 const char *ecl::PathsSeparator = ";";  // for listing paths in a string
 #else

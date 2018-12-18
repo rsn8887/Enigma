@@ -1,5 +1,7 @@
 #include "SDL.h"
+#ifndef __SWITCH__
 #include "IMG_SavePNG.h"
+#endif
 #include "png.h"
 #include <stdlib.h>
 #include <setjmp.h>
@@ -46,7 +48,7 @@ static void png_user_error(png_structp ctx, png_const_charp str)
 }
 
 
-
+#ifndef USE_SDL2
 int IMG_SavePNG_RW(SDL_Surface *face, SDL_RWops *src) {
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 	const int rmask = 0x00ff0000;
@@ -138,7 +140,6 @@ int IMG_SavePNG_RW(SDL_Surface *face, SDL_RWops *src) {
 
     return result;
 }
-
 int IMG_SavePNG(SDL_Surface *surface, const char *file)
 {
     SDL_RWops *out = SDL_RWFromFile(file, "wb");
@@ -149,3 +150,4 @@ int IMG_SavePNG(SDL_Surface *surface, const char *file)
     SDL_RWclose(out);
     return ret;
 }
+#endif

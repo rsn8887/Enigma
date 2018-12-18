@@ -34,7 +34,9 @@
 #include "world.hh"
 #include "MusicManager.hh"
 
+#ifndef __SWITCH__
 #include "enet/enet.h"
+#endif
 
 #ifdef WIN32
 // SendMessage is a Syscall on Windows, so we simply undefine it to use this
@@ -140,8 +142,10 @@ lev::Index *currentIndex = NULL;  // volatile F6 jump back history
 int currentLevel;
 lev::Index *previousIndex = NULL;
 int previousLevel;
+#ifndef __SWITCH__
 ENetAddress network_address;
 ENetHost *network_host = 0;
+#endif
 
 }  // namespace
 
@@ -224,8 +228,10 @@ void Init() {
 
 void Shutdown() {
     lua::ShutdownLevel();
+#ifndef __SWITCH__
     if (network_host != 0)
         enet_host_destroy(network_host);
+#endif
 }
 
 void InitNewGame() {

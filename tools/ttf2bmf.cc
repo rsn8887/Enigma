@@ -125,7 +125,11 @@ start_conversion (TTF_Font* font)
         str[0] = c;
         if (antialias_p) {
             glyph = TTF_RenderText_Shaded(font, str, fgcolor, bgcolor);
+#ifdef USE_SDL2
+            SDL_SetColorKey(glyph, SDL_TRUE,0);
+#else
             SDL_SetColorKey(glyph, SDL_SRCCOLORKEY,0);
+#endif
         }
         else
             glyph = TTF_RenderText_Solid(font, str, fgcolor);

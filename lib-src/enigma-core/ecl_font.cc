@@ -31,6 +31,10 @@
 
 #include <config.h>
 
+#ifdef USE_SDL2
+#include "sdl2_to_sdl1.h"
+#endif
+
 using namespace ecl;
 using namespace std;
 
@@ -251,7 +255,11 @@ Surface *TrueTypeFont::render(const char *str) {
 
     s = TTF_RenderUTF8_Shaded(font, str, fgcolor, bgcolor);
     if (s) {
+#ifdef USE_SDL2
+        SDL_SetColorKey(s, SDL_TRUE, 0);
+#else
         SDL_SetColorKey(s, SDL_SRCCOLORKEY, 0);
+#endif
         return Surface::make_surface(s);
     }
     return MakeSurface(0, get_height(), 16);

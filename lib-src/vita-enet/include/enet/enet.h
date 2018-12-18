@@ -12,7 +12,7 @@ extern "C"
 
 #include <stdlib.h>
 
-#if defined(__vita__)
+#if defined(__vita__) || defined(__SWITCH__)
 #include "enet/vita.h"
 #elif defined(_WIN32)
 #include "enet/win32.h"

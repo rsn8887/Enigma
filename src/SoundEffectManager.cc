@@ -287,7 +287,7 @@ void SoundEffectManager::initSoundSets()
     // Define sound sets
     sound_sets.clear();
     assert(sound_sets.empty());
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__)
     defineSoundSet ("Enigma",   "Enigma",  1);
 #else
     assert(defineSoundSet ("Enigma",   "Enigma",  1));

@@ -17,6 +17,10 @@
 
 #include "SDL_rotozoom.h"
 
+#ifdef USE_SDL2
+#include "sdl2_to_sdl1.h"
+#endif
+
 #define MAX(a,b)    (((a) > (b)) ? (a) : (b))
 #define MIN(a,b)    (((a) < (b)) ? (a) : (b))
 
@@ -722,7 +726,13 @@ void transformSurfaceY(SDL_Surface * src, SDL_Surface * dst, int cx, int cy, int
     /*
      * Clear surface to colorkey
      */
+#ifdef USE_SDL2
+    Uint32 key;
+    SDL_GetColorKey(src, &key);
+    memset(pc, (unsigned char) (key & 0xff), dst->pitch * dst->h);
+#else
     memset(pc, (unsigned char) (src->format->colorkey & 0xff), dst->pitch * dst->h);
+#endif
     /*
      * Iterate through destination surface
      */
@@ -925,7 +935,14 @@ SDL_Surface *rotozoomSurface(SDL_Surface * src, double angle, double zoom, int s
              */
             transformSurfaceY(rz_src, rz_dst, dstwidthhalf, dstheighthalf,
                               (int) (sanglezoominv), (int) (canglezoominv));
+#ifdef USE_SDL2
+            Uint32 key;
+            SDL_GetColorKey(rz_src, &key);
+            SDL_SetColorKey(rz_dst, SDL_TRUE, key);
+            SDL_SetSurfaceRLE(rz_dst, SDL_TRUE);
+#else
             SDL_SetColorKey(rz_dst, SDL_SRCCOLORKEY | SDL_RLEACCEL, rz_src->format->colorkey);
+#endif
         }
         /*
          * Unlock source surface
@@ -993,7 +1010,14 @@ SDL_Surface *rotozoomSurface(SDL_Surface * src, double angle, double zoom, int s
              * Call the 8bit transformation routine to do the zooming
              */
             zoomSurfaceY(rz_src, rz_dst);
+#ifdef USE_SDL2
+            Uint32 key;
+            SDL_GetColorKey(rz_src, &key);
+            SDL_SetColorKey(rz_dst, SDL_TRUE, key);
+            SDL_SetSurfaceRLE(rz_dst, SDL_TRUE);
+#else
             SDL_SetColorKey(rz_dst, SDL_SRCCOLORKEY | SDL_RLEACCEL, rz_src->format->colorkey);
+#endif
         }
         /*
          * Unlock source surface
@@ -1137,7 +1161,14 @@ SDL_Surface *zoomSurface(SDL_Surface * src, double zoomx, double zoomy, int smoo
          * Call the 8bit transformation routine to do the zooming
          */
         zoomSurfaceY(rz_src, rz_dst);
+#ifdef USE_SDL2
+        Uint32 key;
+        SDL_GetColorKey(rz_src, &key);
+        SDL_SetColorKey(rz_dst, SDL_TRUE, key);
+        SDL_SetSurfaceRLE(rz_dst, SDL_TRUE);
+#else
         SDL_SetColorKey(rz_dst, SDL_SRCCOLORKEY | SDL_RLEACCEL, rz_src->format->colorkey);
+#endif
     }
     /*
      * Unlock source surface

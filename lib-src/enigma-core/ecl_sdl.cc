@@ -1,9 +1,13 @@
 #include "ecl_sdl.hh"
 
-#ifdef __vita__
+#if defined(__vita__) || defined(__SWITCH__)
 #include "psp2_input.h"
 #define SDL_PollEvent PSP2_PollEvent
 extern int insideMenu;
+#endif
+
+#ifdef USE_SDL2
+#include "sdl2_to_sdl1.h"
 #endif
 
 namespace sdl {
@@ -19,9 +23,11 @@ bool EventHandler::dispatch_event(SDL_Event &e) {
     case SDL_MOUSEMOTION: handled = on_mousemotion(e); break;
     case SDL_MOUSEBUTTONDOWN:
     case SDL_MOUSEBUTTONUP: handled = on_mousebutton(e); break;
+#ifndef USE_SDL2
     case SDL_ACTIVEEVENT:
         // TODO
         break;
+#endif
     case SDL_QUIT: handled = on_quit(e); break;
     }
     return handled || on_event(e);

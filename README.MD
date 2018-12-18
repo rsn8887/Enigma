@@ -1,6 +1,6 @@
 Overview
 =====
-This is my Vita port of Enigma, a skill/puzzle game inspired by Oxyd on the Atari ST and Rock'n'Roll on the Amiga.
+This is my Vita and Switch port of Enigma, a skill/puzzle game inspired by Oxyd on the Atari ST and Rock'n'Roll on the Amiga.
 
 ![](screenshots/enigma_vita_4.jpg)
 
@@ -13,7 +13,7 @@ http://www.nongnu.org/enigma/index.html
 
 Thanks
 ======
-Thanks to my supporters on Patreon: Andyways, CountDuckula, and Sean Ritzo.
+Thanks to my supporters on Patreon: Andyways, CountDuckula, Greg Gibson, Jesse Harlin, Özgür Karter, Matthew Machnee, and RadicalR.
 
 Thanks to @usineur for his libkbd-vita code for easy use of touch keyboard text entry.
 
@@ -27,45 +27,50 @@ Special thanks to Meinolf Schneider / Amekudzi for the original Oxyd games on At
 
 Installation Instructions
 =====
+Vita:
 - Install the .vpk
 - Extract the contents of data.zip into ux0:data/
 
 NOTE: I recommend using FTP transfer to copy the files over (~10,000 small files in data.zip). There is one report (thanks @ji11x38) that using the Vitashell "SELECT Button: USB" option to copy files directly from a MacOS computer to the Vita via USB caused the files to not transfer correctly, causing Enigma to crash on startup.
 
-Vita-exclusive features
+Switch:
+- Extract the contents of Enigma_Switch.zip into the `switch` folder on your SD card, so that you have a folder `switch/enigma` with `enigma.nro` and more folders and files inside.
+
+Vita/Switch-exclusive features
 =====
 - game controller support: analog joystick mouse controls and button mappings
 - front and rear touch controls with left/right mouse click gestures
 - complete level packages with >3,000 levels and pre-calculated preview screenshots
-- Bluetooth keyboard and mouse combo support (Vita supports only a limited number of BT devices, tested working with Jelly Bean BT keyboard and mouse combo ASIN:B06Y56BBYP and with the standalone Jelly Comb Bluetooth Wireless Mouse ASIN:B075HBDWCF)
+- Bluetooth/USB keyboard and mouse support. The Vita supports only a limited number of BT devices, tested working with Jelly Bean BT keyboard and mouse combo ASIN:B06Y56BBYP and with the standalone Jelly Comb Bluetooth Wireless Mouse ASIN:B075HBDWCF. The Switch supports only a limited number of USB mice. Tested working with Logitech M187.
  
-Vita Controls (controls updated with version 1.08)
+Controls (controls updated with version 1.08)
 =====
 Left analog stick = analog control of the marble and mouse pointer  
-Square / L-trigger = select menu items, use object in game (left mouse button)  
-Triangle / R-trigger = cycle through inventory items (right mouse button)  
-Cross = ok in menu (return)  
-Circle = back / in-game menu (escape key)  
-Start = help screen (F1)  
-Select = destroy marble and remove one life (F3)  
-R-trigger + Select = restart level (shift-F3)  
+Square / Y / L-trigger = select menu items, use object in game (left mouse button)  
+Triangle / X / R-trigger = cycle through inventory items (right mouse button)  
+Cross / A = ok in menu (return)  
+Circle / B = back / in-game menu (escape key)  
+Start / Plus = help screen (F1)  
+Select / Minus = destroy marble and remove one life (F3)  
+R-trigger + Select / R-trigger + Minus = restart level (shift-F3)  
 
 Dpad in menu = quick-select menu items (arrow keys)  
 Dpad left/right in game = quick-change mouse speed  
 Dpad up/down in game = cycle through previous messages  
 
 Front touch = analog control of the marble and mouse pointer  
-Rear touch = analog control of the marble and mouse pointer  
+Rear touch = analog control of the marble and mouse pointer (Vita only)  
 Single finger tap = select menu items, use object in game (left mouse button)  
 Dual finger tap = cycle through inventory items (right mouse button)  
 
 Dual finger tap works by holding one finger down and quickly tapping with a second finger somewhere else.
 
-Mouse sensitivity can be adjusted in options or in-game via dpad left/right. The setting affects analog joystick, touch, and real bluetooth mice.
+Mouse sensitivity can be adjusted in options or in-game via dpad left/right. The setting affects analog joystick, touch, and real bluetooth/USB mice.
 
 Build Instructions
 =====
-Enigma needs xerces-c and inet. To prepare compilation:
+Vita:
+On Vita, Enigma needs xerces-c and inet. To prepare compilation:
 
 - with a text-editor, load the file $VITASDK/arm-vita-eabi/include/netinet/in.h. Inside the file, replace "struct"  with "inline struct" on line 45 and 49.
 - download or clone my xerces-c repo from [here](https://www.github.com/rsn8887/xerces-c) into a folder called xerces
@@ -89,12 +94,36 @@ $VITASDK/arm-vita-eabi/include/xercesc/
 ````
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release ../Enigma
+cmake ../Enigma/ -DBUILD_PSP2=ON -DCMAKE_BUILD_TYPE=Release
 make enigma.vpk -j10
+````
+
+Switch:
+On Switch, Enigma needs xerces-c. To prepare compilation:
+
+- download or clone my xerces-c Switch branch from [here](https://www.github.com/rsn8887/xerces-c1) into a folder called xerces (use `git checkout switch` to make sure you are on the switch branch)
+````
+cmake -DCMAKE_TOOLCHAIN_FILE=../xerces-c-1/switch.toolchain.cmake -Dtranscoder=iconv -Dmutex-manager=nothreads -Dnetwork=OFF -Dsse2=OFF -Dthreads=OFF -DBUILD_SHARED_LIBS=OFF -Dxmlch-type=uint16_t -DULONG_MAX=4294967295 ../xerces-c-1/
+cmake -DCMAKE_TOOLCHAIN_FILE=../xerces-c-1/switch.toolchain.cmake -Dtranscoder=iconv -Dmutex-manager=nothreads -Dnetwork=OFF -Dsse2=OFF -Dthreads=OFF -DBUILD_SHARED_LIBS=OFF -Dxmlch-type=uint16_t -DULONG_MAX=4294967295 ../xerces-c-1/
+cmake -DCMAKE_TOOLCHAIN_FILE=../xerces-c-1/switch.toolchain.cmake -Dtranscoder=iconv -Dmutex-manager=nothreads -Dnetwork=OFF -Dsse2=OFF -Dthreads=OFF -DBUILD_SHARED_LIBS=OFF -Dxmlch-type=uint16_t -DULONG_MAX=4294967295 ../xerces-c-1/
+
+make -j10
+sudo -E make install
+````
+- Clone the Enigma repo into a folder called Enigma and compile
+````
+mkdir build
+cd build
+cmake ../Enigma/ -DBUILD_NX=ON -DCMAKE_BUILD_TYPE=Release
+make enigma_switch.zip -j10
 ````
 
 Changelog
 =====
+1.12 (Switch only)
+
+- Add Switch version
+
 1.11
 
 - Improve response to diagonal stick directions

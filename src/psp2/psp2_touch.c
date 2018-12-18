@@ -408,7 +408,13 @@ void psp2ProcessFingerMotion(TouchEvent *event) {
 				int x = lastmx + xrel;
 				int y = lastmy + yrel;
 				if (insideMenu) {
-					SDL_WarpMouse(x, y);
+					int newx = lastmx + xrel;
+					int newy = lastmy + yrel;
+					if (newx < 0)
+						newx = 0;
+					if (newy < 0)
+						newy = 0;
+					SDL_WarpMouse(newx, newy);
 				} else {
 					SDL_Event ev0;
 					ev0.type = SDL_MOUSEMOTION;

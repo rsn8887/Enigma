@@ -16,6 +16,10 @@
 #include "SDL_gfxPrimitives.h"
 #include "SDL_gfxPrimitives_font.h"
 
+#ifdef USE_SDL2
+#include "sdl2_to_sdl1.h"
+#endif
+
 /* -===================- */
 
 /* Define this flag to use surface blits for alpha blended drawing. */
