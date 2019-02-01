@@ -73,7 +73,7 @@ Vita:
 On Vita, Enigma needs xerces-c and inet. To prepare compilation:
 
 - with a text-editor, load the file $VITASDK/arm-vita-eabi/include/netinet/in.h. Inside the file, replace "struct"  with "inline struct" on line 45 and 49.
-- download or clone my xerces-c repo from [here](https://www.github.com/rsn8887/xerces-c) into a folder called xerces
+- download or clone my xerces-c repo from [here](https://www.github.com/rsn8887/xerces-c) into a folder called xerces, then:
 ````
 mkdir build
 cd build
@@ -90,7 +90,7 @@ and a whole bunch of header files in
 ````
 $VITASDK/arm-vita-eabi/include/xercesc/
 ````
-- Clone the Enigma repo into a folder called Enigma and compile
+- Clone the Enigma repo into a folder called Enigma and compile:
 ````
 mkdir build
 cd build
@@ -99,9 +99,17 @@ make enigma.vpk -j10
 ````
 
 Switch:
-On Switch, Enigma needs xerces-c. To prepare compilation:
+On Switch, Enigma needs ssl and xerces-c. To prepare compilation:
 
-- download or clone my xerces-c Switch branch from [here](https://www.github.com/rsn8887/xerces-c-1) into a folder called xerces (use `git checkout switch` to make sure you are on the switch branch)
+- download or clone the moonlight-switch repo which contains libopenssl [here](https://www.github.com/kbhomes/moonlight-switch), then:
+````
+cd moonlight-switch/dependencies/switch-openssl
+export MOONLIGHT_DEPDIR=$DEVKITPRO/portlibs/switch
+dkp-makepkg
+sudo -E dkp-pacman -U switch-openssl-1.0.2o-1-any.pkg.tar.xz
+````
+
+- download or clone my xerces-c Switch branch from [here](https://www.github.com/rsn8887/xerces-c-1) into a folder called xerces (use `git checkout switch` to make sure you are on the switch branch), then:
 ````
 cmake -DCMAKE_TOOLCHAIN_FILE=../xerces-c-1/switch.toolchain.cmake -Dtranscoder=iconv -Dmutex-manager=nothreads -Dnetwork=OFF -Dsse2=OFF -Dthreads=OFF -DBUILD_SHARED_LIBS=OFF -Dxmlch-type=uint16_t -DULONG_MAX=4294967295 ../xerces-c-1/
 cmake -DCMAKE_TOOLCHAIN_FILE=../xerces-c-1/switch.toolchain.cmake -Dtranscoder=iconv -Dmutex-manager=nothreads -Dnetwork=OFF -Dsse2=OFF -Dthreads=OFF -DBUILD_SHARED_LIBS=OFF -Dxmlch-type=uint16_t -DULONG_MAX=4294967295 ../xerces-c-1/
@@ -110,7 +118,8 @@ cmake -DCMAKE_TOOLCHAIN_FILE=../xerces-c-1/switch.toolchain.cmake -Dtranscoder=i
 make -j10
 sudo -E make install
 ````
-- Clone the Enigma repo into a folder called Enigma and compile
+- (I don't know why repeated cmake is neccessary, but it only works that way for me)
+- Clone the Enigma repo into a folder called Enigma and compile:
 ````
 mkdir build
 cd build
