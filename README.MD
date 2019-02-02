@@ -1,3 +1,9 @@
+Changes in this version
+=====
+1.13 (Switch only)
+
+- Fix crash on Switch when loading a level that contains rubberbands
+
 Overview
 =====
 This is my Vita and Switch port of Enigma, a skill/puzzle game inspired by Oxyd on the Atari ST and Rock'n'Roll on the Amiga.
