@@ -129,6 +129,10 @@ make enigma_switch.zip -j10
 
 Changelog
 =====
+1.13 (Switch only)
+
+- Fix crash on Switch when loading a level that contains rubberbands
+
 1.12 (Switch only)
 
 - Add Switch version

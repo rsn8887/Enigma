@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
 set(VERSION_MAJOR 1)
-set(VERSION_MINOR 12)
+set(VERSION_MINOR 13)
 
 if(BUILD_PSP2)
 if (NOT DEFINED CMAKE_TOOLCHAIN_FILE)
@@ -485,14 +485,130 @@ if(BUILD_NX)
   )
 
   set(FLAGS
+    -std=gnu++11
+    -std=gnu11
     -Wno-write-strings
     -march=armv8-a
     -mtune=cortex-a57
     -mtp=soft
 #-fPIE is neccessary to prevent crash on startup
     -fPIE
-    -O3
-    -ffast-math
+#using anything but -O0 causes crash when loading a level that contains rubberbands
+#the crash happens in rubberbands.cc, line 41: switchAnchor(old, anchor1, anchor2Object());
+#enabling optimization flags by hand prevents the crash
+    -O0
+#O1 (flags from https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html)
+-fauto-inc-dec 
+-fbranch-count-reg 
+-fcombine-stack-adjustments 
+-fcompare-elim 
+-fcprop-registers 
+-fdce 
+-fdefer-pop 
+-fdelayed-branch 
+-fdse 
+-fforward-propagate 
+-fguess-branch-probability 
+-fif-conversion 
+-fif-conversion2 
+-finline-functions-called-once 
+-fipa-profile 
+#the commented three flags here cause the crash in rubberbands.cc 
+#-fipa-pure-const 
+-fipa-reference 
+#-fmerge-constants 
+-fmove-loop-invariants 
+#-fomit-frame-pointer 
+-freorder-blocks 
+-fshrink-wrap 
+-fshrink-wrap-separate 
+-fsplit-wide-types 
+-fssa-backprop 
+-fssa-phiopt 
+-ftree-bit-ccp 
+-ftree-ccp 
+-ftree-ch 
+-ftree-coalesce-vars 
+-ftree-copy-prop 
+-ftree-dce 
+-ftree-dominator-opts 
+-ftree-dse 
+-ftree-forwprop 
+-ftree-fre 
+-ftree-phiprop 
+-ftree-pta 
+-ftree-scev-cprop 
+-ftree-sink 
+-ftree-slsr 
+-ftree-sra 
+-ftree-ter 
+-funit-at-a-time
+
+#-O2
+-falign-functions
+-falign-jumps 
+-falign-labels
+-falign-loops 
+-fcaller-saves 
+-fcode-hoisting 
+-fcrossjumping 
+-fcse-follow-jumps
+-fcse-skip-blocks 
+-fdelete-null-pointer-checks 
+-fdevirtualize
+-fdevirtualize-speculatively 
+-fexpensive-optimizations 
+-fgcse
+-fgcse-lm  
+-fhoist-adjacent-loads 
+-finline-small-functions 
+-findirect-inlining 
+-fipa-bit-cp  
+-fipa-cp
+-fipa-icf 
+-fipa-ra
+-fipa-sra
+-fipa-vrp 
+-fisolate-erroneous-paths-dereference 
+-flra-remat 
+-foptimize-sibling-calls 
+-foptimize-strlen 
+-fpartial-inlining 
+-fpeephole2 
+-freorder-blocks-algorithm=stc 
+-freorder-blocks-and-partition
+-freorder-functions 
+-frerun-cse-after-loop  
+-fschedule-insns 
+-fschedule-insns2 
+-fsched-interblock 
+-fsched-spec 
+-fstore-merging 
+-fstrict-aliasing 
+-fthread-jumps 
+-ftree-builtin-call-dce 
+-ftree-pre 
+-ftree-switch-conversion  
+-ftree-tail-merge 
+-ftree-vrp
+
+#O3
+-fgcse-after-reload 
+-finline-functions 
+-fipa-cp-clone
+-floop-interchange 
+-floop-unroll-and-jam 
+-fpeel-loops 
+-fpredictive-commoning 
+-fsplit-paths 
+-ftree-loop-distribute-patterns 
+-ftree-loop-distribution 
+-ftree-loop-vectorize 
+-ftree-partial-pre 
+-ftree-slp-vectorize 
+-funswitch-loops 
+-fvect-cost-model 
+
     -fno-asynchronous-unwind-tables
     -funroll-loops
     -fno-unwind-tables
