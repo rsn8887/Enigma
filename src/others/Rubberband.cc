@@ -38,7 +38,10 @@ namespace enigma {
             anchor1 = dynamic_cast<Actor *>((Object *)val);
             ASSERT(anchor1 != NULL, XLevelRuntime, "Rubberband: 'anchor1' is no actor");
             ASSERT(anchor1 != anchor2.ac, XLevelRuntime, "Rubberband: 'anchor1' is identical to 'anchor2'");
+#ifndef __SWITCH__
+            // FIXME causes crash on Switch when loading any level with rubberbands
             switchAnchor(old, anchor1, anchor2Object());
+#endif
         } else if (key == "anchor2") {
             Object * old = anchor2Object();
             Object * obj = val;

@@ -513,7 +513,7 @@ if(BUILD_NX)
 -fif-conversion2 
 -finline-functions-called-once 
 -fipa-profile 
-#the commented three flags here cause the crash in rubberbands.cc 
+#the commented three flags here used to cause a crash in rubberbands.cc (see FIXME comment there) 
 #-fipa-pure-const 
 -fipa-reference 
 #-fmerge-constants 
