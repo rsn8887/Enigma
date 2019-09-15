@@ -1,8 +1,8 @@
 Changes in this version
 =====
-1.13 (Switch only)
+1.14 (Switch only)
 
-- Fix crash on Switch when loading a level that contains rubberbands
+- Re-compile with 9.0.0 support
 
 Overview
 =====
@@ -19,7 +19,7 @@ http://www.nongnu.org/enigma/index.html
 
 Thanks
 ======
-Thanks to my supporters on Patreon: Andyways, CountDuckula, Greg Gibson, Jesse Harlin, Özgür Karter, Matthew Machnee, and RadicalR.
+Thanks to my supporters on Patreon: Andyways, CountDuckula, Greg Gibson, Jesse Harlin, Duncan Harris, Özgür Karter, Matthew Machnee, Mored1984, Ibrahim Fazel Poor, and RadicalR.
 
 Thanks to @usineur for his libkbd-vita code for easy use of touch keyboard text entry.
 
@@ -135,6 +135,10 @@ make enigma_switch.zip -j10
 
 Changelog
 =====
+1.14 (Switch only)
+
+- Re-compile with 9.0.0 support
+
 1.13 (Switch only)
 
 - Fix crash on Switch when loading a level that contains rubberbands
