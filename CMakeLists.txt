@@ -630,13 +630,19 @@ if(BUILD_NX)
     stdc++
     xerces-c
     curl
+    mbedtls
+    mbedcrypto
+    mbedx509
     png
     jpeg
     z
     m
     c
+    webp
     vorbisidec
     ogg
+    opusfile
+    opus
     modplug
     mpg123
     freetype
