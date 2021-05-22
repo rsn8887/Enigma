@@ -1,12 +1,8 @@
 Changes in this version
 =====
-1.15 (Switch only)
+1.16 (Switch only)
 
-- Fix crash on Switch when loading levels with rubberbands that re-appeared using latest toolchain
-
-1.14 (Switch only)
-
-- Re-compile with 9.0.0 support
+- Re-compile with 12.0.0 support
 
 Overview
 =====
@@ -139,6 +135,10 @@ make enigma_switch.zip -j10
 
 Changelog
 =====
+1.16 (Switch only)
+
+- Re-compile with 12.0.0 support
+
 1.15 (Switch only)
 
 - Fix crash on Switch when loading levels with rubberbands that re-appeared using latest toolchain
