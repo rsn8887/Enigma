@@ -2,7 +2,8 @@ Changes in this version
 =====
 1.16 (Switch only)
 
-- Re-compile with 12.0.0 support
+- Re-compile with 12.0.0 support. Updating the .nro file is enough, data is the same.
+- Fix crash on Switch when loading levels with rubberbands
 
 Overview
 =====
@@ -137,7 +138,8 @@ Changelog
 =====
 1.16 (Switch only)
 
-- Re-compile with 12.0.0 support
+- Re-compile with 12.0.0 support. Updating the .nro file is enough, data is the same.
+- Fix crash on Switch when loading levels with rubberbands
 
 1.15 (Switch only)
 
