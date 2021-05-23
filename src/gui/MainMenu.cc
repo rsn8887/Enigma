@@ -79,12 +79,14 @@ namespace enigma { namespace gui {
 
     void NetworkMenu::on_action(gui::Widget *w)
     {
+#ifndef __SWITCH__
         if (w == startgame) {
             netgame::Start();
         }
         else if (w == m_joingame) {
             netgame::Join("localhost", 12345);
         }
+#endif
         if (w == m_back)
             Menu::quit();
     }

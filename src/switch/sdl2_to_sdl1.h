@@ -48,7 +48,7 @@ extern SDL_Surface *alpha_format_source;
 #define SDLK_LMETA SDLK_LGUI
 #define SDLK_RMETA SDLK_RGUI
 #define SDL_keysym SDL_Keysym
-#define SDL_DisplayFormat(x) SDL_ConvertSurface(x,switch_screen_surface->format,0)
+#define SDL_DisplayFormat(x) SDL_ConvertSurface(x,alpha_format_source->format,0)
 #define SDL_DisplayFormatAlpha(x) SDL_ConvertSurface(x,alpha_format_source->format,0)
 #define SDL_SetAlpha(x,y,z) SDL_SetSurfaceAlphaMod(x,z); SDL_SetSurfaceBlendMode(x, SDL_BLENDMODE_BLEND);
 typedef enum {

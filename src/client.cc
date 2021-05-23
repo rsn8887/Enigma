@@ -924,7 +924,9 @@ void ClientShutdown() {
 }
 
 bool NetworkStart() {
+#ifndef __SWITCH__
     return client_instance.network_start();
+#endif
 }
 
 void Msg_LevelLoaded(bool isRestart) {
